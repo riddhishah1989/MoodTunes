@@ -22,12 +22,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.moodtunes.app.data.local.FavouriteEntity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.moodtunes.app.R
 import com.moodtunes.app.presentation.components.AppTopBar
 import com.moodtunes.app.presentation.components.EmptyState
+import com.moodtunes.app.presentation.preview.previewFavourite
 import com.moodtunes.app.presentation.components.MoodTunesCard
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
@@ -46,8 +49,8 @@ fun FavouritesScreen(
         topBar = {
             AppTopBar(
                 onBack = onBack,
-                title = "Favourites",
-                subtitle = "${favs.size} saved tracks",
+                title = stringResource(R.string.favourites_title),
+                subtitle = stringResource(R.string.favourites_saved_tracks, favs.size),
             )
         }
     ) { padding ->
@@ -60,8 +63,8 @@ fun FavouritesScreen(
             ) {
                 EmptyState(
                     emoji = "♥",
-                    message = "No favourites yet",
-                    subtitle = "Heart a song from your recommendations",
+                    message = stringResource(R.string.favourites_empty_message),
+                    subtitle = stringResource(R.string.favourites_empty_subtitle),
                     emojiColor = MoodTunesColors.MoodRomantic,
                 )
             }
@@ -126,7 +129,12 @@ private fun FavouriteCard(
                         contentScale = ContentScale.Crop,
                     )
                 } else {
-                    Text("🎵", fontSize = 18.sp)
+                    Icon(
+                        painter = painterResource(R.drawable.ic_music_note),
+                        contentDescription = null,
+                        modifier = Modifier.size(22.dp),
+                        tint = Color(0xFF4A4870),
+                    )
                 }
             }
             Column(modifier = Modifier.weight(1f)) {
@@ -148,7 +156,7 @@ private fun FavouriteCard(
             IconButton(onClick = onSpotify, modifier = Modifier.size(32.dp)) {
                 Icon(
                     Icons.Filled.PlayArrow,
-                    contentDescription = "Play on Spotify",
+                    contentDescription = stringResource(R.string.cd_play_on_spotify),
                     tint = MoodTunesColors.Spotify,
                     modifier = Modifier.size(18.dp),
                 )
@@ -156,7 +164,7 @@ private fun FavouriteCard(
             IconButton(onClick = onYouTube, modifier = Modifier.size(32.dp)) {
                 Icon(
                     Icons.Filled.PlayCircle,
-                    contentDescription = "Play on YouTube",
+                    contentDescription = stringResource(R.string.cd_play_on_youtube),
                     tint = MoodTunesColors.YouTube,
                     modifier = Modifier.size(18.dp),
                 )
@@ -164,7 +172,7 @@ private fun FavouriteCard(
             IconButton(onClick = onRemove, modifier = Modifier.size(32.dp)) {
                 Icon(
                     Icons.Filled.Favorite,
-                    contentDescription = "Remove favourite",
+                    contentDescription = stringResource(R.string.cd_remove_favourite),
                     tint = MoodTunesColors.MoodRomantic,
                     modifier = Modifier.size(18.dp),
                 )
@@ -174,18 +182,6 @@ private fun FavouriteCard(
 }
 
 // ── Previews ──────────────────────────────────────────────────────────────
-
-private val previewFavourite = FavouriteEntity(
-    songId = "1",
-    title = "Blinding Lights",
-    artist = "The Weeknd",
-    album = "After Hours",
-    genre = "Pop",
-    albumArt = null,
-    spotifyUrl = null,
-    youtubeUrl = null,
-)
-
 @Preview(name = "FavouriteCard", showBackground = true, backgroundColor = 0xFF08080F)
 @Composable
 private fun FavouriteCardPreview() {

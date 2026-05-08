@@ -1,6 +1,9 @@
 package com.moodtunes.app.presentation.onboarding
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.ui.res.stringResource
+import com.moodtunes.app.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -22,17 +25,14 @@ import kotlinx.coroutines.launch
 
 data class OnboardingPage(val emoji: String, val title: String, val subtitle: String)
 
-private val pages = listOf(
-    OnboardingPage("🎵", "Music that matches\nyour mood",
-        "Powered by Claude AI — describe how you feel and get a curated playlist instantly."),
-    OnboardingPage("🎯", "Tell us your mood,\nwe pick the songs",
-        "From happy to focused, romantic to energetic — we have the perfect track for every feeling."),
-    OnboardingPage("💕", "Spotify & YouTube\nin one place",
-        "Play on Spotify for audio previews or YouTube for full music videos — your choice."),
-)
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(onFinished: () -> Unit) {
+    val pages = listOf(
+        OnboardingPage("🎵", stringResource(R.string.onboarding_p1_title), stringResource(R.string.onboarding_p1_subtitle)),
+        OnboardingPage("🎯", stringResource(R.string.onboarding_p2_title), stringResource(R.string.onboarding_p2_subtitle)),
+        OnboardingPage("💕", stringResource(R.string.onboarding_p3_title), stringResource(R.string.onboarding_p3_subtitle)),
+    )
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
 
@@ -97,13 +97,13 @@ fun OnboardingScreen(onFinished: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = MoodTunesColors.Primary),
             ) {
                 Text(
-                    if (pagerState.currentPage < pages.lastIndex) "Continue" else "Get Started",
+                    if (pagerState.currentPage < pages.lastIndex) stringResource(R.string.btn_continue) else stringResource(R.string.btn_get_started),
                     style = MaterialTheme.typography.titleSmall, color = Color.White,
                 )
             }
             if (pagerState.currentPage < pages.lastIndex) {
                 TextButton(onClick = onFinished, modifier = Modifier.fillMaxWidth()) {
-                    Text("Skip", color = MoodTunesColors.TextTertiary,
+                    Text(stringResource(R.string.btn_skip), color = MoodTunesColors.TextTertiary,
                         style = MaterialTheme.typography.bodyMedium)
                 }
             }
@@ -112,6 +112,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
 }
 
 // ── Preview ───────────────────────────────────────────────────────────────
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(name = "Onboarding Screen", showBackground = true)
 @Composable
 private fun OnboardingScreenPreview() {

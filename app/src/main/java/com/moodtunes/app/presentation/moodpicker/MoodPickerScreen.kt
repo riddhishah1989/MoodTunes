@@ -18,7 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.moodtunes.app.R
 import com.moodtunes.app.presentation.components.AppTopBar
 import com.moodtunes.app.presentation.components.LoadingOverlay
 import com.moodtunes.app.presentation.components.MoodChip
@@ -48,8 +50,8 @@ fun MoodPickerScreen(
             // ── Top Bar ───────────────────────────────────────────────────
             AppTopBar(
                 onBack      = onBack,
-                title       = "Choose your mood",
-                subtitle    = "or describe it below",
+                title       = stringResource(R.string.mood_picker_title),
+                subtitle    = stringResource(R.string.mood_picker_subtitle),
                 centerTitle = true,
             )
 
@@ -87,7 +89,7 @@ fun MoodPickerScreen(
                     TextField(
                         value         = customText,
                         onValueChange = { customText = it },
-                        placeholder   = { Text("Describe your mood... e.g. \"just got a promotion!\"",
+                        placeholder   = { Text(stringResource(R.string.mood_text_placeholder),
                             style = MaterialTheme.typography.bodySmall,
                             color = MoodTunesColors.TextHint) },
                         colors = TextFieldDefaults.colors(
@@ -116,13 +118,13 @@ fun MoodPickerScreen(
 
                 // CTA Button
                 PrimaryButton(
-                    text    = "Get my playlist  →",
+                    text    = stringResource(R.string.btn_get_playlist),
                     onClick = { viewModel.getRecommendations(customText) },
                     enabled = selectedMood != null || customText.isNotBlank(),
                 )
 
                 Text(
-                    text      = "Powered by Claude AI · Anthropic",
+                    text      = stringResource(R.string.powered_by_claude_anthropic),
                     style     = MaterialTheme.typography.labelSmall,
                     color     = MoodTunesColors.TextHint,
                     textAlign = TextAlign.Center,

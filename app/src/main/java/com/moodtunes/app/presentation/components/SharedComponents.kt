@@ -22,10 +22,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.moodtunes.app.R
 import com.moodtunes.app.domain.model.Mood
 import com.moodtunes.app.domain.model.Song
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.moodtunes.app.navigation.Screen
+import com.moodtunes.app.presentation.preview.previewMood
+import com.moodtunes.app.presentation.preview.previewSong
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
 
@@ -179,12 +184,17 @@ fun SongCard(
                 if (song.albumArt != null) {
                     AsyncImage(
                         model = song.albumArt,
-                        contentDescription = "${song.title} album art",
+                        contentDescription = stringResource(R.string.cd_album_art, song.title),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )
                 } else {
-                    Text(text = "🎵", fontSize = 20.sp)
+                    Icon(
+                        painter = painterResource(R.drawable.ic_music_note),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = Color(0xFF4A4870),
+                    )
                 }
             }
 
@@ -238,7 +248,7 @@ fun SongCard(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.PlayArrow,
-                        contentDescription = "Play on Spotify",
+                        contentDescription = stringResource(R.string.cd_play_on_spotify),
                         tint = Color.White,
                         modifier = Modifier.size(14.dp),
                     )
@@ -257,7 +267,7 @@ fun SongCard(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.PlayCircle,
-                        contentDescription = "Watch on YouTube",
+                        contentDescription = stringResource(R.string.cd_watch_on_youtube),
                         tint = Color.White,
                         modifier = Modifier.size(14.dp),
                     )
@@ -273,7 +283,7 @@ fun SongCard(
                 ) {
                     Icon(
                         imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favourite",
+                        contentDescription = stringResource(R.string.cd_favourite),
                         tint = if (isFavourite) MoodTunesColors.MoodRomantic else MoodTunesColors.TextTertiary,
                         modifier = Modifier.size(14.dp),
                     )
@@ -285,7 +295,7 @@ fun SongCard(
 
 // ── Loading Overlay ───────────────────────────────────────────────────────
 @Composable
-fun LoadingOverlay(message: String = "Finding your perfect songs...") {
+fun LoadingOverlay(message: String = stringResource(R.string.loading_finding_songs)) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -303,7 +313,7 @@ fun LoadingOverlay(message: String = "Finding your perfect songs...") {
                 color = MoodTunesColors.TextSecondary,
             )
             Text(
-                text = "Powered by Claude AI",
+                text = stringResource(R.string.powered_by_claude),
                 style = MaterialTheme.typography.labelSmall,
                 color = MoodTunesColors.TextTertiary,
             )
@@ -335,7 +345,7 @@ fun ErrorState(
             colors = ButtonDefaults.buttonColors(containerColor = MoodTunesColors.Primary),
             shape = RoundedCornerShape(12.dp),
         ) {
-            Text("Try again")
+            Text(stringResource(R.string.btn_try_again))
         }
     }
 }
@@ -371,20 +381,6 @@ fun MoodInterpretationBanner(interpretation: String, modifier: Modifier = Modifi
         )
     }
 }
-
-// ── Preview Data ──────────────────────────────────────────────────────────
-private val previewMood = Mood(
-    id = "happy", label = "Happy", emoji = "😊", description = "Upbeat & joyful",
-    color = 0xFFFFD93D, bgColor = 0xFF1A1500,
-)
-private val previewSong = Song(
-    id = "1", title = "Blinding Lights", artist = "The Weeknd", album = "After Hours",
-    genre = "Pop", year = 2020, reason = "Energetic beat matching your mood",
-    energyLevel = "High", tempo = "Fast",
-    spotifyQuery = "Blinding Lights The Weeknd", youtubeQuery = "Blinding Lights The Weeknd",
-    spotifyUrl = null, previewUrl = null, albumArt = null, albumArtThumb = null,
-    youtubeUrl = null, youtubeThumbnail = null, youtubeVideoId = null,
-)
 
 // ── Previews ──────────────────────────────────────────────────────────────
 @Preview(name = "BottomNav", showBackground = true, backgroundColor = 0xFF08080F)

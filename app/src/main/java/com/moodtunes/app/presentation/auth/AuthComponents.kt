@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.moodtunes.app.R
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
 
@@ -40,7 +42,7 @@ internal fun GoogleSignInButton(onClick: () -> Unit) {
         Text("G", style = MaterialTheme.typography.titleSmall, color = MoodTunesColors.Error)
         Spacer(Modifier.width(8.dp))
         Text(
-            "Sign up with Google", style = MaterialTheme.typography.bodyMedium,
+            stringResource(R.string.btn_sign_up_with_google), style = MaterialTheme.typography.bodyMedium,
             color = MoodTunesColors.TextSecondary
         )
     }

@@ -21,11 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.moodtunes.app.R
 import com.moodtunes.app.data.local.MoodSessionEntity
 import com.moodtunes.app.domain.model.PresetMoods
 import androidx.compose.ui.tooling.preview.Preview
 import com.moodtunes.app.presentation.components.EmptyState
+import com.moodtunes.app.presentation.preview.previewSession
 import com.moodtunes.app.presentation.components.MoodChip
 import com.moodtunes.app.presentation.components.MoodTunesCard
 import com.moodtunes.app.ui.theme.MoodTunesColors
@@ -40,7 +44,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val sessions by viewModel.recentSessions.collectAsState()
-    val greeting = remember { getGreeting() }
+    val greeting = stringResource(remember { getGreetingRes() })
 
     Scaffold(
         containerColor = MoodTunesColors.Background,
@@ -63,7 +67,7 @@ fun HomeScreen(
                 ) {
                     Column {
                         Text(
-                            text = "MoodTunes",
+                            text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.headlineMedium,
                             color = MoodTunesColors.TextPrimary,
                         )
@@ -82,7 +86,7 @@ fun HomeScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            Icons.Filled.Person, contentDescription = "Profile",
+                            Icons.Filled.Person, contentDescription = stringResource(R.string.cd_profile),
                             tint = MoodTunesColors.Primary, modifier = Modifier.size(20.dp)
                         )
                     }
@@ -103,18 +107,18 @@ fun HomeScreen(
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(
-                            text = "HOW ARE YOU FEELING?",
+                            text = stringResource(R.string.home_hero_label),
                             style = MaterialTheme.typography.labelSmall,
                             color = MoodTunesColors.Primary,
                             fontWeight = FontWeight.Medium,
                         )
                         Text(
-                            text = "Let AI find music\nthat matches your mood",
+                            text = stringResource(R.string.home_hero_title),
                             style = MaterialTheme.typography.headlineMedium,
                             color = MoodTunesColors.TextPrimary,
                         )
                         Text(
-                            text = "Powered by Claude AI",
+                            text = stringResource(R.string.powered_by_claude),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color(0xFF4A4870),
                         )
@@ -126,7 +130,7 @@ fun HomeScreen(
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
                             Text(
-                                text = "Pick my mood  →",
+                                text = stringResource(R.string.home_hero_cta),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = Color.White,
                                 fontWeight = FontWeight.Medium,
@@ -140,7 +144,7 @@ fun HomeScreen(
             // ── Quick Mood Scroll ─────────────────────────────────────────
             item {
                 Text(
-                    text = "QUICK PICK",
+                    text = stringResource(R.string.home_section_quick_pick),
                     style = MaterialTheme.typography.labelSmall,
                     color = MoodTunesColors.TextTertiary,
                     modifier = Modifier.padding(horizontal = 20.dp),
@@ -173,13 +177,13 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "RECENT SESSIONS",
+                            text = stringResource(R.string.home_section_recent_sessions),
                             style = MaterialTheme.typography.labelSmall,
                             color = MoodTunesColors.TextTertiary,
                         )
                         TextButton(onClick = {}) {
                             Text(
-                                "See all", color = MoodTunesColors.Primary,
+                                stringResource(R.string.home_see_all), color = MoodTunesColors.Primary,
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }
@@ -201,7 +205,7 @@ fun HomeScreen(
                             .padding(32.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        EmptyState(emoji = "🎵", message = "Your mood sessions will appear here")
+                        EmptyState(emoji = "🎵", message = stringResource(R.string.home_empty_sessions))
                     }
                 }
             }
@@ -241,7 +245,7 @@ private fun SessionCard(
                     maxLines = 1,
                 )
                 Text(
-                    text = "$dateStr · ${session.songs.size} songs",
+                    text = stringResource(R.string.session_time_songs, dateStr, session.songs.size),
                     style = MaterialTheme.typography.bodySmall,
                     color = MoodTunesColors.TextTertiary,
                 )
@@ -254,22 +258,17 @@ private fun SessionCard(
     }
 }
 
-private fun getGreeting(): String {
+@StringRes
+private fun getGreetingRes(): Int {
     val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     return when {
-        hour < 12 -> "Good morning — what's your vibe today?"
-        hour < 17 -> "Good afternoon — how are you feeling?"
-        else -> "Good evening — how was your day?"
+        hour < 12 -> R.string.home_greeting_morning
+        hour < 17 -> R.string.home_greeting_afternoon
+        else -> R.string.home_greeting_evening
     }
 }
 
 // ── Previews ──────────────────────────────────────────────────────────────
-private val previewSession = MoodSessionEntity(
-    sessionId = "1", moodId = "happy", moodLabel = "Happy", moodEmoji = "😊",
-    customText = null, moodInterpretation = "Feeling joyful today",
-    songs = emptyList(), timestamp = System.currentTimeMillis(),
-)
-
 @Preview(name = "SessionCard", showBackground = true, backgroundColor = 0xFF08080F)
 @Composable
 private fun SessionCardPreview() {

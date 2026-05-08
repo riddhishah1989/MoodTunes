@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,10 +20,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.moodtunes.app.R
 import com.moodtunes.app.domain.model.Song
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
@@ -56,13 +60,13 @@ fun NowPlayingScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, "Back", tint = MoodTunesColors.TextSecondary)
+                        Icon(Icons.Filled.ArrowBack, stringResource(R.string.cd_back), tint = MoodTunesColors.TextSecondary)
                     }
-                    Text("Playing Now", style = MaterialTheme.typography.titleMedium,
+                    Text(stringResource(R.string.now_playing_title), style = MaterialTheme.typography.titleMedium,
                         color = MoodTunesColors.TextPrimary)
                     IconButton(onClick = { showLyrics = !showLyrics }) {
                         Icon(if (showLyrics) Icons.Filled.MusicNote else Icons.Filled.Lyrics,
-                            "Toggle", tint = MoodTunesColors.TextSecondary)
+                            stringResource(R.string.cd_toggle_view), tint = MoodTunesColors.TextSecondary)
                     }
                 }
 
@@ -79,7 +83,12 @@ fun NowPlayingScreen(
                             AsyncImage(model = s.albumArt, contentDescription = null,
                                 modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
                         } else {
-                            Text("🎵", fontSize = 72.sp)
+                            Icon(
+                                painter = painterResource(R.drawable.ic_music_note),
+                                contentDescription = null,
+                                modifier = Modifier.size(80.dp),
+                                tint = Color(0xFF4A4870),
+                            )
                         }
                     }
                 } else {
@@ -92,7 +101,7 @@ fun NowPlayingScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Why this song?\n\n${s.reason}",
+                            text = stringResource(R.string.now_playing_why_this_song, s.reason),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MoodTunesColors.PrimaryVariant,
                             textAlign = TextAlign.Center,
@@ -125,7 +134,7 @@ fun NowPlayingScreen(
                     ) {
                         Icon(Icons.Filled.PlayArrow, null, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
-                        Text("Spotify", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.btn_spotify), style = MaterialTheme.typography.labelLarge)
                     }
                     Button(
                         onClick = {
@@ -138,7 +147,7 @@ fun NowPlayingScreen(
                     ) {
                         Icon(Icons.Filled.PlayCircle, null, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
-                        Text("YouTube", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.btn_youtube), style = MaterialTheme.typography.labelLarge)
                     }
                 }
 
@@ -151,7 +160,7 @@ fun NowPlayingScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = { viewModel.previous() }, modifier = Modifier.size(48.dp)) {
-                        Icon(Icons.Filled.SkipPrevious, "Previous",
+                        Icon(Icons.Filled.SkipPrevious, stringResource(R.string.cd_previous),
                             tint = MoodTunesColors.TextSecondary, modifier = Modifier.size(32.dp))
                     }
                     Box(
@@ -159,11 +168,11 @@ fun NowPlayingScreen(
                             .background(MoodTunesColors.Primary),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Icon(Icons.Filled.PlayArrow, "Play",
+                        Icon(Icons.Filled.PlayArrow, stringResource(R.string.cd_play),
                             tint = Color.White, modifier = Modifier.size(36.dp))
                     }
                     IconButton(onClick = { viewModel.next() }, modifier = Modifier.size(48.dp)) {
-                        Icon(Icons.Filled.SkipNext, "Next",
+                        Icon(Icons.Filled.SkipNext, stringResource(R.string.cd_next),
                             tint = MoodTunesColors.TextSecondary, modifier = Modifier.size(32.dp))
                     }
                 }
@@ -175,7 +184,7 @@ fun NowPlayingScreen(
                     IconButton(onClick = { viewModel.toggleFavourite(s) }) {
                         Icon(
                             imageVector = if (isFav) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Favourite",
+                            contentDescription = stringResource(R.string.cd_favourite),
                             tint = if (isFav) MoodTunesColors.MoodRomantic else MoodTunesColors.TextTertiary,
                         )
                     }

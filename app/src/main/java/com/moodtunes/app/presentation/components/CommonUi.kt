@@ -19,7 +19,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.moodtunes.app.R
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
 
@@ -41,7 +43,7 @@ fun AppTopBar(
     ) {
         IconButton(onClick = onBack) {
             Icon(
-                Icons.Filled.ArrowBack, contentDescription = "Back",
+                Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.cd_back),
                 tint = MoodTunesColors.TextSecondary
             )
         }
@@ -126,7 +128,7 @@ fun PrimaryButton(
             disabledContainerColor = Color(0xFF2A2A44),
         ),
     ) {
-        Text(text, style = MaterialTheme.typography.titleSmall, color = Color.White)
+        Text(text, style = MaterialTheme.typography.titleLarge, color = Color.White)
     }
 }
 

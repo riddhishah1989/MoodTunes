@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,8 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.moodtunes.app.R
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTypography
 import kotlinx.coroutines.delay
@@ -67,19 +71,21 @@ fun SplashScreen(
                 .scale(scale.value)
                 .alpha(alpha.value),
         ) {
-            Text(
-                text = "🎵",
-                fontSize = 72.sp,
+            Icon(
+                painter = painterResource(R.drawable.ic_music_note),
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MoodTunesColors.Primary,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "MoodTunes",
+                text = stringResource(R.string.app_name),
                 style = MoodTunesTypography.displayLarge,
                 color = MoodTunesColors.Primary,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Music that matches your mood",
+                text = stringResource(R.string.app_tagline),
                 style = MoodTunesTypography.bodyMedium,
                 color = MoodTunesColors.TextSecondary,
             )

@@ -18,8 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moodtunes.app.data.local.MoodSessionEntity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.moodtunes.app.R
 import com.moodtunes.app.presentation.components.AppTopBar
+import com.moodtunes.app.presentation.preview.previewHistorySession
 import com.moodtunes.app.presentation.components.EmptyState
 import com.moodtunes.app.presentation.components.MoodTunesCard
 import com.moodtunes.app.ui.theme.MoodTunesColors
@@ -53,11 +56,11 @@ fun HistoryScreen(
         topBar = {
             AppTopBar(
                 onBack   = onBack,
-                title    = "History",
-                subtitle = "Your recent mood sessions",
+                title    = stringResource(R.string.history_title),
+                subtitle = stringResource(R.string.history_subtitle),
                 action   = {
                     IconButton(onClick = { viewModel.clearHistory() }) {
-                        Icon(Icons.Filled.DeleteOutline, contentDescription = "Clear",
+                        Icon(Icons.Filled.DeleteOutline, contentDescription = stringResource(R.string.cd_clear_history),
                             tint = MoodTunesColors.Error)
                     }
                 }
@@ -66,7 +69,7 @@ fun HistoryScreen(
     ) { padding ->
         if (sessions.isEmpty()) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                EmptyState(emoji = "🕐", message = "No sessions yet")
+                EmptyState(emoji = "🕐", message = stringResource(R.string.history_empty))
             }
             return@Scaffold
         }
@@ -128,12 +131,12 @@ private fun HistoryItemCard(
                                 .background(Color(0xFF12102E))
                                 .padding(horizontal = 8.dp, vertical = 2.dp)
                         ) {
-                            Text("New", style = MaterialTheme.typography.labelSmall,
+                            Text(stringResource(R.string.history_badge_new), style = MaterialTheme.typography.labelSmall,
                                 color = MoodTunesColors.Primary)
                         }
                     }
                 }
-                Text("$timeStr · ${session.songs.size} songs",
+                Text(stringResource(R.string.session_time_songs, timeStr, session.songs.size),
                     style = MaterialTheme.typography.bodySmall,
                     color = MoodTunesColors.TextTertiary)
             }
@@ -148,12 +151,6 @@ private fun isSameDay(a: Calendar, b: Calendar) =
             a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR)
 
 // ── Previews ──────────────────────────────────────────────────────────────
-private val previewHistorySession = MoodSessionEntity(
-    sessionId = "1", moodId = "happy", moodLabel = "Happy", moodEmoji = "😊",
-    customText = null, moodInterpretation = "Feeling great today",
-    songs = emptyList(), timestamp = System.currentTimeMillis(),
-)
-
 @Preview(name = "HistoryItemCard", showBackground = true, backgroundColor = 0xFF08080F)
 @Composable
 private fun HistoryItemCardPreview() {
