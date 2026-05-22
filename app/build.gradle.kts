@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.apollo)
 }
 
 android {
@@ -18,8 +19,7 @@ android {
         versionName = "1.0"
 
         // ── API base URL ─────────────────────────────────────────────────────
-        // Replace with your Railway.app URL after deployment
-        buildConfigField("String", "API_BASE_URL", "\"https://your-moodtunes-api.up.railway.app/\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://moodtunes-graphql-api-devlopment.up.railway.app/graphql\"")
         buildConfigField("String", "API_KEY", "\"moodtunes-secret-2026\"")
     }
 
@@ -71,9 +71,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    // Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
+    // Networking — Apollo GraphQL
+    implementation(libs.apollo.runtime)
     implementation(libs.okhttp.logging)
     implementation(libs.gson)
 
@@ -93,4 +92,11 @@ dependencies {
 
     // Lottie animations
     implementation(libs.lottie.compose)
+}
+
+apollo {
+    service("moodtunes") {
+        packageName.set("com.moodtunes.app.graphql")
+        generateOptionalOperationVariables.set(false)
+    }
 }

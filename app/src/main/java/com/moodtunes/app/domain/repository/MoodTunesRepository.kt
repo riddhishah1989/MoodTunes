@@ -7,6 +7,9 @@ import com.moodtunes.app.domain.model.Song
 import kotlinx.coroutines.flow.Flow
 
 interface MoodTunesRepository {
+    suspend fun signIn(email: String, password: String): Result<Unit>
+    suspend fun signUp(name: String, email: String, password: String): Result<Unit>
+    suspend fun signOut()
     suspend fun getRecommendations(mood: Mood, customText: String?, count: Int = 8): Result<Pair<String, List<Song>>>
     fun getAllSessions(): Flow<List<MoodSessionEntity>>
     suspend fun getSession(id: String): MoodSessionEntity?

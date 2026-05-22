@@ -22,12 +22,14 @@ import com.moodtunes.app.ui.theme.MoodTunesTheme
 
 @Composable
 fun SignUpScreen(
-    onSignUp: () -> Unit,
+    state: AuthState,
+    onSignUp: (name: String, email: String, password: String) -> Unit,
     onNavigateToSignIn: () -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     AuthScaffold {
         Icon(
@@ -82,14 +84,10 @@ fun SignUpScreen(
             keyboardType = KeyboardType.Password,
             isPassword = true,
         )
-
-
-
-
         Spacer(Modifier.height(12.dp))
         AuthTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
             label = stringResource(R.string.label_confirm_password),
             leadingIcon = {
                 Icon(
@@ -100,14 +98,30 @@ fun SignUpScreen(
             keyboardType = KeyboardType.Password,
             isPassword = true,
         )
-        Spacer(Modifier.height(20.dp))
-        PrimaryButton(text = stringResource(R.string.btn_sign_up), onClick = onSignUp)
+        Spacer(Modifier.height(8.dp))
+
+        if (state.error != null) {
+            Text(
+                text = state.error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+            Spacer(Modifier.height(4.dp))
+        }
+
+        Spacer(Modifier.height(12.dp))
+        PrimaryButton(
+            text = stringResource(R.string.btn_sign_up),
+            onClick = { onSignUp(name, email, password) },
+            enabled = !state.isLoading && name.isNotBlank() && email.isNotBlank() && password.isNotBlank(),
+        )
         Spacer(Modifier.height(12.dp))
 
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(
                 stringResource(R.string.prompt_have_account), style = MaterialTheme.typography.bodyMedium,
-                color = MoodTunesColors.TextSecondary,  modifier = Modifier.align(Alignment.CenterVertically)
+                color = MoodTunesColors.TextSecondary, modifier = Modifier.align(Alignment.CenterVertically)
             )
             TextButton(onClick = onNavigateToSignIn, contentPadding = PaddingValues(0.dp)) {
                 Text(
@@ -119,11 +133,10 @@ fun SignUpScreen(
     }
 }
 
-// ── Preview ───────────────────────────────────────────────────────────────
 @Preview(name = "Sign Up Screen", showBackground = true)
 @Composable
 private fun SignUpScreenPreview() {
     MoodTunesTheme {
-        SignUpScreen(onSignUp = {}, onNavigateToSignIn = {})
+        SignUpScreen(state = AuthState(), onSignUp = { _, _, _ -> }, onNavigateToSignIn = {})
     }
 }

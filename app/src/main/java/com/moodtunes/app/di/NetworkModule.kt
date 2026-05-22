@@ -1,15 +1,15 @@
 package com.moodtunes.app.di
 
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.okHttpClient
 import com.moodtunes.app.BuildConfig
-import com.moodtunes.app.data.remote.MoodTunesApiService
+import com.moodtunes.app.data.local.PreferencesManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -19,21 +19,21 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(preferencesManager: PreferencesManager): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG)
-                HttpLoggingInterceptor.Level.BODY
-            else
-                HttpLoggingInterceptor.Level.NONE
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+                    else HttpLoggingInterceptor.Level.NONE
         }
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Content-Type", "application/json")
+                val builder = chain.request().newBuilder()
                     .addHeader("x-api-key", BuildConfig.API_KEY)
-                    .build()
-                chain.proceed(request)
+                val token = preferencesManager.jwtToken
+                if (token != null) {
+                    builder.addHeader("Authorization", "Bearer $token")
+                }
+                chain.proceed(builder.build())
             }
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
@@ -43,15 +43,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.API_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+    fun provideApolloClient(okHttpClient: OkHttpClient): ApolloClient =
+        ApolloClient.Builder()
+            .serverUrl(BuildConfig.API_BASE_URL)
+            .okHttpClient(okHttpClient)
             .build()
-
-    @Provides
-    @Singleton
-    fun provideMoodTunesApiService(retrofit: Retrofit): MoodTunesApiService =
-        retrofit.create(MoodTunesApiService::class.java)
 }

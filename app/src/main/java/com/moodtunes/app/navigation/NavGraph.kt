@@ -1,6 +1,9 @@
 package com.moodtunes.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,7 +17,7 @@ import com.moodtunes.app.presentation.recommendations.RecommendationsScreen
 import com.moodtunes.app.presentation.history.HistoryScreen
 import com.moodtunes.app.presentation.player.NowPlayingScreen
 import com.moodtunes.app.presentation.onboarding.OnboardingScreen
-import com.moodtunes.app.presentation.auth.SignInScreen
+import com.moodtunes.app.presentation.auth.LoginScreen
 import com.moodtunes.app.presentation.auth.SignUpScreen
 import com.moodtunes.app.presentation.favourites.FavouritesScreen
 import com.moodtunes.app.presentation.splash.SplashScreen
@@ -79,23 +82,39 @@ fun MoodTunesNavGraph(
         }
 
         composable(Screen.SignIn.route) {
-            SignInScreen(
-                onSignIn = {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val state by authViewModel.state.collectAsState()
+
+            LaunchedEffect(state.isAuthenticated) {
+                if (state.isAuthenticated) {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.SignIn.route) { inclusive = true }
                     }
-                },
-                onNavigateToSignUp = { navController.navigate(Screen.SignUp.route) }
+                }
+            }
+
+            LoginScreen(
+                state = state,
+                onSignIn = authViewModel::signIn,
+                onNavigateToSignUp = { navController.navigate(Screen.SignUp.route) },
             )
         }
 
         composable(Screen.SignUp.route) {
-            SignUpScreen(
-                onSignUp = {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val state by authViewModel.state.collectAsState()
+
+            LaunchedEffect(state.isAuthenticated) {
+                if (state.isAuthenticated) {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.SignUp.route) { inclusive = true }
                     }
-                },
+                }
+            }
+
+            SignUpScreen(
+                state = state,
+                onSignUp = authViewModel::signUp,
                 onNavigateToSignIn = { navController.popBackStack() }
             )
         }
