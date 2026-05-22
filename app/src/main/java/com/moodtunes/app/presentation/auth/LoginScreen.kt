@@ -9,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,8 +20,9 @@ import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
 
 @Composable
-fun SignInScreen(
-    onSignIn: () -> Unit,
+fun LoginScreen(
+    state: AuthState,
+    onSignIn: (email: String, password: String) -> Unit,
     onNavigateToSignUp: () -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
@@ -90,7 +90,21 @@ fun SignInScreen(
         }
         Spacer(Modifier.height(8.dp))
 
-        PrimaryButton(text = stringResource(R.string.btn_login), onClick = onSignIn)
+        if (state.error != null) {
+            Text(
+                text = state.error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+            Spacer(Modifier.height(4.dp))
+        }
+
+        PrimaryButton(
+            text = stringResource(R.string.btn_login),
+            onClick = { onSignIn(email, password) },
+            enabled = !state.isLoading,
+        )
         Spacer(Modifier.height(12.dp))
 
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
@@ -110,11 +124,12 @@ fun SignInScreen(
     }
 }
 
+
 // ── Preview ───────────────────────────────────────────────────────────────
 @Preview(name = "Login Screen", showBackground = true)
 @Composable
-private fun SignInScreenPreview() {
+private fun LoginScreenPreview() {
     MoodTunesTheme {
-        SignInScreen(onSignIn = {}, onNavigateToSignUp = {})
+        LoginScreen(state = AuthState(), onSignIn = { _, _ -> }, onNavigateToSignUp = {})
     }
 }
