@@ -1,7 +1,6 @@
 package com.moodtunes.app.di
 
 import com.moodtunes.app.data.repository.MoodTunesRepositoryImpl
-import com.moodtunes.app.domain.repository.MoodTunesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,62 +1,169 @@
 package com.moodtunes.app.data.mapper
 
-import com.moodtunes.app.data.local.FavouriteEntity
-import com.moodtunes.app.data.remote.response.ApiSong
-import com.moodtunes.app.domain.model.Song
+import com.moodtunes.app.data.remote.response.*
+import com.moodtunes.app.domain.model.*
 
-object Mapper {
+// ═══════════════════════════════════════════════════════════════
+// Mappers — Response → Domain
+// Called inside Repository before returning to ViewModel
+// ViewModel and UI only ever see Domain models — never Response
+// ═══════════════════════════════════════════════════════════════
 
-    fun apiSongToSong(apiSong: ApiSong) = Song(
-        id = "${apiSong.title}-${apiSong.artist}".hashCode().toString(),
-        title = apiSong.title,
-        artist = apiSong.artist,
-        album = apiSong.album,
-        genre = apiSong.genre,
-        year = apiSong.year,
-        reason = apiSong.reason,
-        energyLevel = apiSong.energyLevel,
-        tempo = apiSong.tempo,
-        spotifyQuery = apiSong.spotifyQuery,
-        youtubeQuery = apiSong.youtubeQuery,
-        spotifyUrl = apiSong.spotify?.spotifyUrl,
-        previewUrl = apiSong.spotify?.previewUrl,
-        albumArt = apiSong.spotify?.albumArt,
-        albumArtThumb = apiSong.spotify?.albumArtThumb,
-        youtubeUrl = apiSong.youtube?.youtubeUrl,
-        youtubeThumbnail = apiSong.youtube?.youtubeThumbnail,
-        youtubeVideoId = apiSong.youtube?.youtubeVideoId,
-    )
+// ── User ──────────────────────────────────────────────────────
+fun UserResponse.toDomain() = User(
+    id              = id,
+    name            = name,
+    email           = email,
+    profilePicture  = profilePicture,
+    birthDay        = birthDay,
+    birthMonth      = birthMonth,
+    gender          = gender,
+    country         = country,
+    preferredGenres = preferredGenres ?: emptyList(),
+    isVerified      = isVerified,
+    lastLogin       = lastLogin,
+    createdAt       = createdAt,
+)
 
-    fun songToFavouriteEntity(song: Song) = FavouriteEntity(
-        songId = song.id,
-        title = song.title,
-        artist = song.artist,
-        album = song.album,
-        genre = song.genre,
-        albumArt = song.albumArt,
-        spotifyUrl = song.spotifyUrl,
-        youtubeUrl = song.youtubeUrl,
-    )
+// ── Auth (signup + signin) ────────────────────────────────────
+fun SignUpResponse.toDomain() = Auth(
+    token   = token,
+    user    = user.toDomain(),
+    message = message,
+)
 
-    fun favouriteEntityToSong(entity: FavouriteEntity) = Song(
-        id = entity.songId,
-        title = entity.title,
-        artist = entity.artist,
-        album = entity.album,
-        genre = entity.genre,
-        year = 0,
-        reason = "",
-        energyLevel = "",
-        tempo = "",
-        spotifyQuery = "",
-        youtubeQuery = "",
-        spotifyUrl = entity.spotifyUrl,
-        previewUrl = null,
-        albumArt = entity.albumArt,
-        albumArtThumb = null,
-        youtubeUrl = entity.youtubeUrl,
-        youtubeThumbnail = null,
-        youtubeVideoId = null,
-        isFavourite = true,
-    )
-}
+fun SignInResponse.toDomain() = Auth(
+    token   = token,
+    user    = user.toDomain(),
+    message = message,
+)
+
+// ── Mood ──────────────────────────────────────────────────────
+fun MoodItemResponse.toDomain() = Mood(
+    id          = id,
+    label       = label,
+    emoji       = emoji,
+    description = description,
+    colorHex    = colorHex,
+    bgColorHex  = bgColorHex,
+)
+
+fun MoodsResponse.toDomain(): List<Mood> = moods.map { it.toDomain() }
+
+// ── Genre ─────────────────────────────────────────────────────
+fun GenreItemResponse.toDomain() = Genre(
+    id          = id,
+    name        = name,
+    description = description,
+    emoji       = emoji,
+)
+
+fun GenresResponse.toDomain(): List<Genre> = genres.map { it.toDomain() }
+
+// ── Song ──────────────────────────────────────────────────────
+fun SongResponse.toDomain() = Song(
+    id               = id,
+    title            = title,
+    artist           = artist,
+    album            = album,
+    genre            = genre,
+    year             = year,
+    reason           = reason,
+    energyLevel      = energyLevel,
+    tempo            = tempo,
+    albumArt         = albumArt,
+    albumArtThumb    = albumArtThumb,
+    previewUrl       = previewUrl,
+    spotifyUrl       = spotifyUrl,
+    youtubeUrl       = youtubeUrl,
+    youtubeThumbnail = youtubeThumbnail,
+)
+
+// ── Recommendation ────────────────────────────────────────────
+fun RecommendationResponse.toDomain() = RecommendationResult(
+    sessionId          = sessionId,
+    moodInput          = moodInput,
+    moodInterpretation = moodInterpretation,
+    songs              = recommendations.map { it.toDomain() },
+)
+
+// ── Session ───────────────────────────────────────────────────
+fun SessionResponse.toDomain() = Session(
+    id                 = id,
+    mood               = mood,
+    customText         = customText,
+    moodInterpretation = moodInterpretation,
+    songCount          = songCount,
+    createdAt          = createdAt,
+    songs              = songs?.map { it.toDomain() } ?: emptyList(),
+)
+
+fun HistoryResponse.toDomain(): List<Session> = sessions.map { it.toDomain() }
+
+// ── Favourite ─────────────────────────────────────────────────
+fun FavouriteItemResponse.toDomain() = Favourite(
+    id         = id,
+    songId     = songId,
+    title      = title,
+    artist     = artist,
+    album      = album,
+    genre      = genre,
+    albumArt   = albumArt,
+    spotifyUrl = spotifyUrl,
+    youtubeUrl = youtubeUrl,
+    savedAt    = savedAt,
+)
+
+fun FavouritesResponse.toDomain(): List<Favourite> = favourites.map { it.toDomain() }
+
+// ── Journal ───────────────────────────────────────────────────
+fun JournalEntryResponse.toDomain() = JournalEntry(
+    id        = id,
+    mood      = mood,
+    moodEmoji = moodEmoji,
+    note      = note,
+    rating    = rating,
+    tags      = tags ?: emptyList(),
+    createdAt = createdAt,
+)
+
+fun JournalResponse.toDomain(): List<JournalEntry> = entries.map { it.toDomain() }
+
+// ── Insights ──────────────────────────────────────────────────
+fun MoodStatResponse.toDomain() = MoodStat(
+    mood      = mood,
+    emoji     = emoji,
+    count     = count,
+    avgRating = avgRating,
+)
+
+fun GenreStatResponse.toDomain() = GenreStat(
+    genre = genre,
+    count = count,
+)
+
+fun GenrePerMoodResponse.toDomain() = GenrePerMood(
+    mood     = mood,
+    topGenre = topGenre,
+)
+
+fun InsightsResponse.toDomain() = Insights(
+    hasData             = hasData,
+    periodDays          = periodDays,
+    mostCommonMood      = mostCommonMood?.toDomain(),
+    moodBreakdown       = moodBreakdown?.map { it.toDomain() } ?: emptyList(),
+    topGenres           = topGenres?.map { it.toDomain() } ?: emptyList(),
+    genrePerMood        = genrePerMood?.map { it.toDomain() } ?: emptyList(),
+    totalSessions       = totalSessions,
+    totalJournalEntries = totalJournalEntries,
+    aiInsight           = aiInsight,
+    message             = message,
+)
+
+// ── Share ─────────────────────────────────────────────────────
+fun ShareResponse.toDomain() = ShareResult(
+    shareUrl  = shareUrl,
+    sessionId = sessionId,
+    mood      = mood,
+    songCount = songCount,
+)
