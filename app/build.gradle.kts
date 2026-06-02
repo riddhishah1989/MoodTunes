@@ -20,7 +20,7 @@ android {
 
         // ── API base URL ─────────────────────────────────────────────────────
         // Replace with your Railway.app URL after deployment
-        buildConfigField("String", "API_BASE_URL", "https://moodtunes-graphql-api-devlopment.up.railway.app/graphql")
+        buildConfigField("String", "API_BASE_URL", "\"https://moodtunes-graphql-api-devlopment.up.railway.app/graphql\"")
         buildConfigField("String", "API_KEY", "\"moodtunes-secret-2026\"")
     }
 

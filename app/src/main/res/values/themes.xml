@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <style name="Theme.MoodTunes" parent="android:Theme.Material.Light.NoActionBar">-->
-<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
-<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
-<!--        <item name="android:windowBackground">@android:color/black</item>-->
-<!--    </style>-->
-
     <!-- Main app theme -->
     <style name="Theme.MoodTunes" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <!-- Splash screen theme -->
     <style name="Theme.MoodTunes.Splash" parent="Theme.SplashScreen">
-        <!-- Background color of splash screen -->
-        <item name="windowSplashScreenBackground">@color/background</item>
-        <!-- Your app icon shown in the center -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
-        <!-- How long icon animation plays (max 1000ms) -->
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_music_note</item>
         <item name="windowSplashScreenAnimationDuration">500</item>
-        <!-- Theme to switch to after splash -->
         <item name="postSplashScreenTheme">@style/Theme.MoodTunes</item>
     </style>
+
 </resources>

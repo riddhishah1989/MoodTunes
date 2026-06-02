@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.moodtunes.app.R
 import com.moodtunes.app.ui.theme.MoodTunesColors
 import com.moodtunes.app.ui.theme.MoodTunesTheme
+import com.moodtunes.app.ui.theme.MoodTunesTypography
 
 // ── Top Bar ───────────────────────────────────────────────────────────────
 @Composable
@@ -43,7 +45,8 @@ fun AppTopBar(
     ) {
         IconButton(onClick = onBack) {
             Icon(
-                Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.cd_back),
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.cd_back),
                 tint = MoodTunesColors.TextSecondary
             )
         }
@@ -73,39 +76,44 @@ fun AppTopBar(
 fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
+    hint: String,
     leadingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     isPassword: Boolean = false,
 ) {
-    Column {
-        Text(
-            label, style = MaterialTheme.typography.labelLarge,
-            color = MoodTunesColors.TextSecondary, modifier = Modifier.padding(bottom = 6.dp)
-        )
-        TextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            leadingIcon = leadingIcon,
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF0C0C1E),
-                unfocusedContainerColor = Color(0xFF0C0C1E),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = MoodTunesColors.TextPrimary,
-                unfocusedTextColor = MoodTunesColors.TextPrimary,
-            ),
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    0.5.dp, MoodTunesColors.CardBorder, RoundedCornerShape(12.dp)
-                ),
-        )
-    }
+    TextField(
+        label = null,
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = true,
+        leadingIcon = leadingIcon,
+        visualTransformation = if (isPassword) PasswordVisualTransformation()
+        else VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        placeholder = {
+            Text(
+                text = hint,
+                style = MoodTunesTypography.bodyMedium,
+                color = MoodTunesColors.TextTertiary, // ← #999999 hint text
+            )
+        },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MoodTunesColors.SurfaceVariant,  // #F0E5F8
+            unfocusedContainerColor = MoodTunesColors.SurfaceVariant,  // #F0E5F8
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedTextColor = MoodTunesColors.TextPrimary,     // #1A1A1A
+            unfocusedTextColor = MoodTunesColors.TextPrimary,     // #1A1A1A
+            cursorColor = MoodTunesColors.Primary,         // #6F259C
+            focusedLeadingIconColor = MoodTunesColors.Primary,         // #6F259C
+            unfocusedLeadingIconColor = MoodTunesColors.TextTertiary,    // #999999
+        ),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(0.5.dp, MoodTunesColors.CardBorder, RoundedCornerShape(12.dp)),
+        textStyle = MoodTunesTypography.bodyMedium,
+    )
 }
 
 // ── Primary Button ────────────────────────────────────────────────────────
@@ -124,39 +132,17 @@ fun PrimaryButton(
             .height(52.dp),
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MoodTunesColors.Primary,
-            disabledContainerColor = Color(0xFF2A2A44),
+            containerColor = MoodTunesColors.Primary,           // #6F259C
+            contentColor = Color.White,
+            disabledContainerColor = MoodTunesColors.SurfaceVariant,    // ✅ light grey not dark
+            disabledContentColor = MoodTunesColors.TextTertiary,      // ✅ #999999
         ),
     ) {
-        Text(text, style = MaterialTheme.typography.titleLarge, color = Color.White)
-    }
-}
-
-// ── Empty State ───────────────────────────────────────────────────────────
-@Composable
-fun EmptyState(
-    emoji: String,
-    message: String,
-    subtitle: String? = null,
-    emojiColor: Color = Color.Unspecified,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(emoji, fontSize = 36.sp, color = emojiColor)
         Text(
-            message, style = MaterialTheme.typography.bodyMedium,
-            color = MoodTunesColors.TextTertiary
+            text = text,
+            style = MoodTunesTypography.titleMedium,
+            color = Color.White,
         )
-        if (subtitle != null) {
-            Text(
-                subtitle, style = MaterialTheme.typography.bodySmall,
-                color = MoodTunesColors.TextHint
-            )
-        }
     }
 }
 
@@ -170,7 +156,7 @@ fun MoodTunesCard(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MoodTunesColors.Surface)
+            .background(MoodTunesColors.Surface)              // ✅ #F8F3FD light
             .border(0.5.dp, MoodTunesColors.CardBorder, RoundedCornerShape(16.dp))
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
             .padding(12.dp),
@@ -178,61 +164,36 @@ fun MoodTunesCard(
     )
 }
 
-// ── Previews ──────────────────────────────────────────────────────────────
-@Preview(name = "AppTopBar - Left", showBackground = true, backgroundColor = 0xFF08080F)
+// ── Preview ───────────────────────────────────────────────────────────
+@Preview(showBackground = true)
 @Composable
-private fun AppTopBarPreview() {
+private fun CommonUIPreview() {
     MoodTunesTheme {
-        AppTopBar(onBack = {}, title = "Favourites", subtitle = "12 saved tracks")
-    }
-}
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            AuthTextField(value = "riddhi@gmail.com", onValueChange = {}, hint = "Enter Email")
+            Spacer(modifier = Modifier.size(12.dp))
+            AuthTextField(
+                value = "riddhi@123",
+                onValueChange = {},
+                hint = "Enter Password",
+                isPassword = true
+            )
+            Spacer(modifier = Modifier.size(12.dp))
+            MoodTunesCard(
+                onClick = {},
+            ) {
+                Text(
+                    "Card content goes here",
+                    color = MoodTunesColors.TextPrimary, modifier = Modifier.padding(4.dp),
+                )
+            }
 
-@Preview(name = "AppTopBar - Centered", showBackground = true, backgroundColor = 0xFF08080F)
-@Composable
-private fun AppTopBarCenteredPreview() {
-    MoodTunesTheme {
-        AppTopBar(onBack = {}, title = "Choose your mood", subtitle = "or describe it below", centerTitle = true)
-    }
-}
-
-@Preview(name = "AuthTextField", showBackground = true, backgroundColor = 0xFF08080F)
-@Composable
-private fun AuthTextFieldPreview() {
-    MoodTunesTheme {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            AuthTextField(value = "user@email.com", onValueChange = {}, label = "Email address")
-            AuthTextField(value = "", onValueChange = {}, label = "Password", isPassword = true)
-        }
-    }
-}
-
-@Preview(name = "PrimaryButton", showBackground = true, backgroundColor = 0xFF08080F)
-@Composable
-private fun PrimaryButtonPreview() {
-    MoodTunesTheme {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            PrimaryButton(text = "Sign in", onClick = {})
-            PrimaryButton(text = "Disabled", onClick = {}, enabled = false)
-        }
-    }
-}
-
-@Preview(name = "EmptyState", showBackground = true, backgroundColor = 0xFF08080F)
-@Composable
-private fun EmptyStatePreview() {
-    MoodTunesTheme {
-        Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-            EmptyState(emoji = "🎵", message = "No songs yet", subtitle = "Pick a mood to get started")
-        }
-    }
-}
-
-@Preview(name = "MoodTunesCard", showBackground = true, backgroundColor = 0xFF08080F)
-@Composable
-private fun MoodTunesCardPreview() {
-    MoodTunesTheme {
-        MoodTunesCard(modifier = Modifier.fillMaxWidth().padding(16.dp), onClick = {}) {
-            Text("Card content goes here", color = Color.White, modifier = Modifier.padding(4.dp))
+            Spacer(modifier = Modifier.size(12.dp))
+            PrimaryButton(text = "Login", onClick = {})
         }
     }
 }

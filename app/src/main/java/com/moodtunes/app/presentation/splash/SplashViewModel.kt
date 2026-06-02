@@ -10,10 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed class SplashState {
-    object GoSignIn : SplashState()
-    object GoHome : SplashState()
-}
+
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(private val userPreferences: UserPreferences) : ViewModel() {
