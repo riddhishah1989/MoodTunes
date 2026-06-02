@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -17,157 +18,185 @@ import com.moodtunes.app.R
 
 // ── Color Palette (extracted from Figma design) ───────────────────────────
 object MoodTunesColors {
-    // Backgrounds
-    val Background = Color(0xFF08080F)
-    val Surface = Color(0xFF0F0F1E)
-    val SurfaceVariant = Color(0xFF141428)
-    val CardBorder = Color(0xFF1E1E36)
+    // ── Backgrounds (from Figma) ──────────────
+    val Background = Color(0xFFFFFFFF)  // Figma: #FFFFFF — page color
+    val Surface = Color(0xFFF8F3FD)  // soft lavender white — cards bg
+    val SurfaceVariant = Color(0xFFF0E5F8)  // input fields
+    val CardBorder = Color(0xFFE0D0EE)  // card outlines
 
-    // Primary accent — purple (our spec, replacing Figma's teal)
-    val Primary = Color(0xFF6C63FF)
-    val PrimaryVariant = Color(0xFF8B85FF)
-    val PrimaryContainer = Color(0xFF12103A)
-    val OnPrimary = Color(0xFFFFFFFF)
+    // ── Primary (from Figma) ─────────────────────
+    val Primary = Color(0xFF6F259C)  // Figma: #6F259C — button color
+    val PrimaryVariant = Color(0xFF9B5CC8)  // lighter purple
+    val PrimaryContainer = Color(0xFFF5EEFF)  // hero card bg
+    val OnPrimary = Color(0xFFFFFFFF)  // white text on button
 
-    // Secondary accent — teal (kept from Figma for Spotify references)
-    val Secondary = Color(0xFF00D4CC)
-    val OnSecondary = Color(0xFF003333)
+    // ── Text (from Figma) ────────────────────────
+    val TextPrimary = Color(0xFF1A1A1A)  // Figma: #1A1A1A — main text
+    val TextSecondary = Color(0xFF555555)  // secondary text
+    val TextTertiary = Color(0xFF999999)  // Figma: #999999 — unselected/hint
+    val TextHint = Color(0xFFBBBBBB)  // placeholder text
 
-    // Text
-    val TextPrimary = Color(0xFFFFFFFF)
-    val TextSecondary = Color(0xFF888888)
-    val TextTertiary = Color(0xFF444466)
-    val TextHint = Color(0xFF333355)
+    // ── Player (from Figma) ──────────────────────
+    val PlayButton = Color(0xFF6B32AB)  // Figma: #6B32AB — play button
+    val PlayerIcon = Color(0xFF1A1C20)  // Figma: #1A1C20 — fwd/back icons
 
-    // Mood accent colors
-    val MoodHappy = Color(0xFFFFD93D)
-    val MoodSad = Color(0xFF5B8FD4)
-    val MoodEnergetic = Color(0xFFFF6B6B)
-    val MoodCalm = Color(0xFF5DD68A)
-    val MoodRomantic = Color(0xFFFF63A5)
-    val MoodFocused = Color(0xFF4D96FF)
-    val MoodAngry = Color(0xFFFF4444)
-    val MoodAnxious = Color(0xFFC77DFF)
+    // ── Mood accent colors ────────────────────────
+    val MoodHappy = Color(0xFFB89000)
+    val MoodSad = Color(0xFF3878C8)
+    val MoodEnergetic = Color(0xFFD03828)
+    val MoodCalm = Color(0xFF1A8050)
+    val MoodRomantic = Color(0xFFD01858)
+    val MoodFocused = Color(0xFF6F259C)
+    val MoodAngry = Color(0xFFE02818)
+    val MoodAnxious = Color(0xFF9828D0)
 
-    // Mood background tints
-    val MoodHappyBg = Color(0xFF1A1500)
-    val MoodSadBg = Color(0xFF040810)
-    val MoodEnergeticBg = Color(0xFF0F0404)
-    val MoodCalmBg = Color(0xFF04100A)
-    val MoodRomanticBg = Color(0xFF0F0408)
-    val MoodFocusedBg = Color(0xFF04060F)
-    val MoodAngryBg = Color(0xFF0F0404)
-    val MoodAnxiousBg = Color(0xFF0A040F)
+    // ── Mood background tints ─────────────────────
+    val MoodHappyBg = Color(0xFFFFF8E0)
+    val MoodSadBg = Color(0xFFE8EEFF)
+    val MoodEnergeticBg = Color(0xFFFFE8E8)
+    val MoodCalmBg = Color(0xFFE8F8EE)
+    val MoodRomanticBg = Color(0xFFFFE8F5)
+    val MoodFocusedBg = Color(0xFFEEE8FF)
+    val MoodAngryBg = Color(0xFFFFEAEA)
+    val MoodAnxiousBg = Color(0xFFF5E8FF)
 
-    // Functional
+    // ── Functional ───────────────────────────────
     val Spotify = Color(0xFF1DB954)
     val YouTube = Color(0xFFC4302B)
-    val Error = Color(0xFFFF4444)
-    val Success = Color(0xFF5DD68A)
-    val Warning = Color(0xFFFFD93D)
-    val Divider = Color(0xFF12122A)
+    val Error = Color(0xFFD82828)
+    val Success = Color(0xFF1A9858)
+    val Warning = Color(0xFFD89000)
+    val Divider = Color(0xFFEEE5F5)
 }
 
-// ── Dark Color Scheme ─────────────────────────────────────────────────────
-private val DarkColorScheme = darkColorScheme(
-    primary = MoodTunesColors.Primary,
-    onPrimary = MoodTunesColors.OnPrimary,
-    primaryContainer = MoodTunesColors.PrimaryContainer,
-    onPrimaryContainer = MoodTunesColors.PrimaryVariant,
-    secondary = MoodTunesColors.Secondary,
-    onSecondary = MoodTunesColors.OnSecondary,
-    background = MoodTunesColors.Background,
-    onBackground = MoodTunesColors.TextPrimary,
-    surface = MoodTunesColors.Surface,
-    onSurface = MoodTunesColors.TextPrimary,
-    surfaceVariant = MoodTunesColors.SurfaceVariant,
-    onSurfaceVariant = MoodTunesColors.TextSecondary,
-    error = MoodTunesColors.Error,
-    outline = MoodTunesColors.CardBorder,
+private val LightColorScheme = lightColorScheme(
+
+    // ── Background ───────────────────────────────
+    background = MoodTunesColors.Background,    // #FFFFFF — screen background
+    onBackground = MoodTunesColors.TextPrimary,   // #1A1A1A — text ON background
+
+    // ── Surface (cards, sheets) ──────────────────
+    surface = MoodTunesColors.Surface,        // #F8F3FD — card background
+    onSurface = MoodTunesColors.TextPrimary,    // #1A1A1A — text on cards
+    surfaceVariant = MoodTunesColors.SurfaceVariant, // #F0E5F8 — input fields
+    onSurfaceVariant = MoodTunesColors.TextSecondary,  // #555555 — hint text on inputs
+
+    // ── Primary (buttons, active states) ────────
+    primary = MoodTunesColors.Primary,          // #6F259C — button bg
+    onPrimary = MoodTunesColors.OnPrimary,        // #FFFFFF — white text ON button
+    primaryContainer = MoodTunesColors.PrimaryContainer, // #F5EEFF — hero card / chip bg
+    onPrimaryContainer = MoodTunesColors.Primary,        // #6F259C — purple text on container
+
+    // ── Secondary ────────────────────────────────
+    secondary = MoodTunesColors.PrimaryVariant, // #9B5CC8
+    onSecondary = Color.White,
+    secondaryContainer = MoodTunesColors.PrimaryContainer,
+    onSecondaryContainer = MoodTunesColors.Primary,
+
+    // ── Other ────────────────────────────────────
+    outline = MoodTunesColors.CardBorder,  // #E0D0EE — borders
+    error = MoodTunesColors.Error,       // #D82828 — error states
+    onError = Color.White,
 )
 
-// ── Font Family ───────────────────────────────────────────────────────────
-val PoppinsFontFamily = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_semi_bold, FontWeight.SemiBold),
-    Font(R.font.poppins_bold, FontWeight.Bold),
+val DmSansFontFamily = FontFamily(
+    Font(R.font.dmsans_regular, FontWeight.Normal),
+    Font(R.font.dmsans_medium, FontWeight.Medium),
+    Font(R.font.dmsans_semibold, FontWeight.SemiBold),
+    Font(R.font.dmsans_bold, FontWeight.Bold),
+    Font(R.font.dmsans_black, FontWeight.Black),
 )
 
-// ── Typography ────────────────────────────────────────────────────────────
 val MoodTunesTypography = Typography(
+    // ── Display — hero numbers, large splash text ──────────
     displayLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Black,      // dmsans_black — most impactful
         fontSize = 32.sp,
         letterSpacing = (-1).sp,
-        color = MoodTunesColors.TextPrimary
+        color = MoodTunesColors.TextPrimary,
     ),
+    displayMedium = TextStyle(
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Bold,       // dmsans_bold
+        fontSize = 28.sp,                // ← fix: was 16sp, too small for display
+        letterSpacing = (-0.5).sp,
+        color = MoodTunesColors.TextPrimary,
+    ),
+
+    // ── Headline — page titles, screen headers ──────────────
     headlineLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Bold,       // dmsans_bold
         fontSize = 24.sp,
         letterSpacing = (-0.5).sp,
-        color = MoodTunesColors.TextPrimary
+        color = MoodTunesColors.TextPrimary,
     ),
     headlineMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Bold,       // dmsans_bold
         fontSize = 20.sp,
         letterSpacing = (-0.5).sp,
-        color = MoodTunesColors.TextPrimary
+        color = MoodTunesColors.TextPrimary,
     ),
+
+    // ── Title — card titles, section headers ────────────────
     titleLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.SemiBold,      // dmsans_semibold
         fontSize = 18.sp,
-        color = MoodTunesColors.TextPrimary
+        color = MoodTunesColors.TextPrimary,
     ),
     titleMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.SemiBold,      // dmsans_semibold
         fontSize = 15.sp,
-        color = MoodTunesColors.TextPrimary
+        color = MoodTunesColors.TextPrimary,
     ),
     titleSmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 13.sp,
-        color = MoodTunesColors.TextPrimary
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Medium,        // ← fix: Medium instead of SemiBold
+        fontSize = 13.sp,                   //    feels lighter and cleaner
+        color = MoodTunesColors.TextPrimary,
     ),
+
+    // ── Body — descriptions, content text ───────────────────
     bodyLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Normal,        // dmsans_regular
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        color = MoodTunesColors.TextPrimary
+        color = MoodTunesColors.TextPrimary,
     ),
     bodyMedium = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Normal,        // dmsans_regular
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        color = MoodTunesColors.TextSecondary
+        color = MoodTunesColors.TextSecondary,
     ),
     bodySmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Normal,        // dmsans_regular
         fontSize = 12.sp,
-        lineHeight = 16.sp,
-        color = MoodTunesColors.TextSecondary
+        lineHeight = 18.sp,
+        color = MoodTunesColors.TextSecondary,
     ),
+
+    // ── Label — buttons, chips, badges ──────────────────────
     labelLarge = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.SemiBold,   // dmsans_semibold — buttons need weight
         fontSize = 12.sp,
         letterSpacing = 0.1.sp,
-        color = MoodTunesColors.TextSecondary
+        color = MoodTunesColors.TextSecondary,
     ),
     labelSmall = TextStyle(
-        fontFamily = PoppinsFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.Medium,     // ← fix: Medium not Normal — more readable
         fontSize = 10.sp,
         letterSpacing = 0.08.sp,
-        color = MoodTunesColors.TextTertiary
+        color = MoodTunesColors.TextTertiary,
     ),
 )
 
@@ -184,7 +213,7 @@ val MoodTunesShapes = Shapes(
 @Composable
 fun MoodTunesTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = DarkColorScheme,
+        colorScheme = LightColorScheme,
         typography = MoodTunesTypography,
         shapes = MoodTunesShapes,
         content = content

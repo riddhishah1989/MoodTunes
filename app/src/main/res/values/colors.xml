@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#08080F</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F8F3FD</color>
+    <color name="primary">#6F259C</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Splash screen background — must match your splash -->
+    <color name="splash_background">#FFFFFF</color>
 </resources>

@@ -4,12 +4,10 @@
     <!-- ── App ────────────────────────────────────────────────────────────── -->
     <string name="app_name">MoodTunes</string>
     <string name="app_tagline">Music that matches your mood</string>
-    <string name="powered_by_claude">Powered by Claude AI</string>
-    <string name="powered_by_claude_anthropic">Powered by Claude AI · Anthropic</string>
 
     <!-- ── Auth ───────────────────────────────────────────────────────────── -->
-    <string name="label_email">Email</string>
-    <string name="label_password">Password</string>
+    <string name="hint_email">Enter Email</string>
+    <string name="hint_password">Enter Password</string>
     <string name="label_confirm_password">Confirm Password</string>
     <string name="label_full_name">Full name</string>
     <string name="btn_login">Login</string>
