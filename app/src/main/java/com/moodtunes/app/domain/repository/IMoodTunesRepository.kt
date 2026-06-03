@@ -4,15 +4,6 @@ import com.moodtunes.app.data.remote.request.UpdateProfileRequest
 import com.moodtunes.app.domain.model.*
 import com.moodtunes.app.domain.result.DataResult
 
-/**
- * Repository contract defined in domain layer.
- *
- * - UseCases depend on this interface (not the implementation)
- * - MoodTunesRepository in data/ implements this
- * - Hilt binds the implementation to this interface via RepositoryModule
- *
- * domain/ has zero dependency on data/ — only the other way around.
- */
 interface IMoodTunesRepository {
 
     // ── Auth ──────────────────────────────────────────────────
@@ -20,6 +11,7 @@ interface IMoodTunesRepository {
         name: String,
         email: String,
         password: String,
+        preferredGenres: List<String> = emptyList(),
     ): DataResult<Auth>
 
     suspend fun signIn(
@@ -41,6 +33,28 @@ interface IMoodTunesRepository {
     suspend fun deleteAccount(
         password: String,
     ): DataResult<Unit>
+
+    // ── OTP / Password Reset ──────────────────────────────────
+    suspend fun forgotPassword(
+        email: String,
+    ): DataResult<String>  // returns message
+
+    suspend fun verifyOTP(
+        email: String,
+        otp: String,
+    ): DataResult<String>  // returns verified email for next screen
+
+    suspend fun resendOTP(
+        email: String,
+    ): DataResult<String>  // returns message
+
+    suspend fun resetPassword(
+        email: String,
+        newPassword: String,
+        confirmPassword: String,
+    ): DataResult<Unit>  // returns success message
+
+    suspend fun refreshToken(): DataResult<String>  // returns new token
 
     // ── Moods ─────────────────────────────────────────────────
     suspend fun getMoods(): DataResult<List<Mood>>

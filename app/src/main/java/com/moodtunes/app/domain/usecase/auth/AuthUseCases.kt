@@ -5,12 +5,13 @@ import com.moodtunes.app.domain.repository.IMoodTunesRepository
 import com.moodtunes.app.domain.result.DataResult
 import javax.inject.Inject
 
-class SignUpUseCase @Inject constructor(private val repository: IMoodTunesRepository, ) {
+class SignUpUseCase @Inject constructor(private val repository: IMoodTunesRepository) {
     suspend operator fun invoke(
         name: String,
         email: String,
         password: String,
-    ): DataResult<Auth> = repository.signUp(name, email, password)
+        preferredGenres: List<String>
+    ): DataResult<Auth> = repository.signUp(name, email, password, preferredGenres)
 }
 
 class SignInUseCase @Inject constructor(private val repository: IMoodTunesRepository) {
@@ -20,7 +21,7 @@ class SignInUseCase @Inject constructor(private val repository: IMoodTunesReposi
     ): DataResult<Auth> = repository.signIn(email, password)
 }
 
-class GetProfileUseCase @Inject constructor(private val repository: IMoodTunesRepository, ) {
+class GetProfileUseCase @Inject constructor(private val repository: IMoodTunesRepository) {
     suspend operator fun invoke(): DataResult<com.moodtunes.app.domain.model.User> =
         repository.getMe()
 }
@@ -47,7 +48,7 @@ class ChangePasswordUseCase @Inject constructor(private val repository: IMoodTun
 
 // ─────────────────────────────────────────────────────────────
 
-class DeleteAccountUseCase @Inject constructor(private val repository: IMoodTunesRepository, ) {
+class DeleteAccountUseCase @Inject constructor(private val repository: IMoodTunesRepository) {
     suspend operator fun invoke(
         password: String,
     ): DataResult<Unit> = repository.deleteAccount(password)

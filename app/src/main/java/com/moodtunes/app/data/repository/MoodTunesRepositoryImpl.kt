@@ -2,16 +2,20 @@ package com.moodtunes.app.data.repository
 
 import com.moodtunes.app.data.mapper.toDomain
 import com.moodtunes.app.data.remote.MoodTunesApiService
-import com.moodtunes.app.data.remote.models.safeApiCall
 import com.moodtunes.app.data.remote.request.AddFavouriteRequest
 import com.moodtunes.app.data.remote.request.AddJournalRequest
 import com.moodtunes.app.data.remote.request.ChangePasswordRequest
 import com.moodtunes.app.data.remote.request.DeleteAccountRequest
+import com.moodtunes.app.data.remote.request.ForgotPasswordRequest
 import com.moodtunes.app.data.remote.request.RecommendationRequest
+import com.moodtunes.app.data.remote.request.ResendOTPRequest
+import com.moodtunes.app.data.remote.request.ResetPasswordRequest
 import com.moodtunes.app.data.remote.request.ShareRequest
 import com.moodtunes.app.data.remote.request.SignInRequest
 import com.moodtunes.app.data.remote.request.SignUpRequest
 import com.moodtunes.app.data.remote.request.UpdateProfileRequest
+import com.moodtunes.app.data.remote.request.VerifyOTPRequest
+import com.moodtunes.app.data.remote.response.safeApiCall
 import com.moodtunes.app.domain.model.Auth
 import com.moodtunes.app.domain.model.Favourite
 import com.moodtunes.app.domain.model.Genre
@@ -23,21 +27,30 @@ import com.moodtunes.app.domain.model.Session
 import com.moodtunes.app.domain.model.ShareResult
 import com.moodtunes.app.domain.model.User
 import com.moodtunes.app.domain.repository.IMoodTunesRepository
+import com.moodtunes.app.domain.result.DataResult
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.moodtunes.app.domain.result.DataResult
-import com.moodtunes.app.domain.result.mapSuccess
 
 
 @Singleton
 class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiService) :
     IMoodTunesRepository {
+    // ── Auth ──────────────────────────────────────────────────
+
     override suspend fun signUp(
         name: String,
         email: String,
         password: String,
+        preferredGenres: List<String>,
     ): DataResult<Auth> = safeApiCall {
-        api.signUp(SignUpRequest(name = name, email = email, password = password))
+        api.signUp(
+            SignUpRequest(
+                name = name,
+                email = email,
+                password = password,
+                preferredGenres = preferredGenres,
+            )
+        )
     }.mapSuccess { it.toDomain() }
 
     override suspend fun signIn(
@@ -70,15 +83,58 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         api.deleteAccount(DeleteAccountRequest(password))
     }.mapSuccess { }
 
+    // ── OTP / Password Reset ──────────────────────────────────
+
+    override suspend fun forgotPassword(
+        email: String,
+    ): DataResult<String> = safeApiCall {
+        api.forgotPassword(ForgotPasswordRequest(email = email))
+    }.mapSuccess { it.message }
+
+    override suspend fun verifyOTP(
+        email: String,
+        otp: String,
+    ): DataResult<String> = safeApiCall {
+        api.verifyOTP(VerifyOTPRequest(email = email, otp = otp))
+    }.mapSuccess { it.email }  // returns verified email → pass to ResetPassword screen
+
+    override suspend fun resendOTP(
+        email: String,
+    ): DataResult<String> = safeApiCall {
+        api.resendOTP(ResendOTPRequest(email = email))
+    }.mapSuccess { it.message }
+
+    override suspend fun resetPassword(
+        email: String,
+        newPassword: String,
+        confirmPassword: String,
+    ): DataResult<Unit> = safeApiCall {
+        api.resetPassword(
+            ResetPasswordRequest(
+                email = email,
+                newPassword = newPassword,
+                confirmPassword = confirmPassword,
+            )
+        )
+    }.mapSuccess { }
+
+    override suspend fun refreshToken(): DataResult<String> = safeApiCall {
+        api.refreshToken()
+    }.mapSuccess { it.token }
+
+    // ── Moods ─────────────────────────────────────────────────
+
     override suspend fun getMoods(): DataResult<List<Mood>> = safeApiCall {
         api.getMoods()
     }.mapSuccess { it.toDomain() }
 
+    // ── Genres ────────────────────────────────────────────────
 
     override suspend fun getGenres(): DataResult<List<Genre>> = safeApiCall {
         api.getGenres()
     }.mapSuccess { it.toDomain() }
 
+    // ── Recommendations ───────────────────────────────────────
 
     override suspend fun getRecommendations(
         mood: String,
@@ -100,6 +156,7 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         )
     }.mapSuccess { it.toDomain() }
 
+    // ── History ───────────────────────────────────────────────
 
     override suspend fun getHistory(
         limit: Int,
@@ -224,3 +281,11 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         api.generateShareLink(ShareRequest(sessionId))
     }.mapSuccess { it.toDomain() }
 }
+
+// ── Extension: DataResult<T> → DataResult<R> ─────────────────
+// Transforms success data while passing errors through unchanged
+fun <T, R> DataResult<T>.mapSuccess(transform: (T) -> R): DataResult<R> =
+    when (this) {
+        is DataResult.Success -> DataResult.Success(transform(data))
+        is DataResult.Error -> DataResult.Error(message)
+    }

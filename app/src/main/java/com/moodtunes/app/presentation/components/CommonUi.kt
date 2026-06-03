@@ -245,6 +245,38 @@ fun MoodTunesCard(
     )
 }
 
+@Composable
+fun rememberMoodTunesSnackbar(): SnackbarHostState {
+    return remember { SnackbarHostState() }
+}
+
+@Composable
+fun MoodTunesSnackbarHost(snackbarHostState: SnackbarHostState) {
+    SnackbarHost(hostState = snackbarHostState) { data ->
+        Snackbar(
+            snackbarData = data,
+            containerColor = MoodTunesColors.Primary,
+            contentColor = Color.White,
+            actionColor = Color.White,
+            shape = RoundedCornerShape(12.dp),
+        )
+    }
+}
+
+@Composable
+fun MoodTunesLoadingOverlay(isLoading: Boolean) {
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.3f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator(color = MoodTunesColors.Primary)
+        }
+    }
+}
+
 // ── Preview ───────────────────────────────────────────────────────────
 @Preview(showBackground = true)
 @Composable
