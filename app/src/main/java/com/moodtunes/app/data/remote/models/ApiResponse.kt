@@ -2,8 +2,6 @@ package com.moodtunes.app.data.remote.models
 
 import com.moodtunes.app.domain.result.DataResult
 
-// ── Raw HTTP response wrapper ─────────────────────────────
-// Every API call returns this from Retrofit
 data class ApiResponse<T>(
     val success: Boolean,
     val data: T?,
@@ -17,7 +15,6 @@ data class MetaData(
     val model: String?,
 )
 
-// ── Converts ApiResponse → DataResult ────────────────────
 fun <T> ApiResponse<T>.toResult(): DataResult<T> =
     if (success && data != null) DataResult.Success(data)
     else DataResult.Error(error ?: "Something went wrong.")

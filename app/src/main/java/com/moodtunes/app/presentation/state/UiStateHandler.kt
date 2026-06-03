@@ -1,8 +1,18 @@
 package com.moodtunes.app.presentation.state
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,24 +39,32 @@ import com.moodtunes.app.ui.theme.MoodTunesColors
 fun <T> UiStateHandler(
     uiState: UiState<T>,
     onRetry: () -> Unit,
+    snackbarHostState: SnackbarHostState? = null,
     idleContent: @Composable (() -> Unit)? = null,
     content: @Composable (data: T) -> Unit,
 ) {
-    when (uiState) {
-
-        is UiState.Idle -> {
-            idleContent?.invoke()
+    // Show snackbar when error occurs — only if snackbarHostState provided
+    LaunchedEffect(uiState) {
+        if (uiState is UiState.Error && snackbarHostState != null) {
+            snackbarHostState.showSnackbar(uiState.message)
         }
-
+    }
+    when (uiState) {
         is UiState.Loading -> {
             MoodTunesLoadingIndicator()
         }
 
         is UiState.Error -> {
-            MoodTunesErrorState(
-                message = uiState.message,
-                onRetry = onRetry,
-            )
+            if (snackbarHostState != null) {
+                // Snackbar handles the error — show form again
+                idleContent?.invoke()
+            } else {
+                // Full screen error with retry button
+                MoodTunesErrorState(
+                    message = uiState.message,
+                    onRetry = onRetry,
+                )
+            }
         }
 
         is UiState.Success -> {

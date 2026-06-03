@@ -17,27 +17,17 @@ import kotlinx.coroutines.launch
  *   - uiState:  StateFlow<UiState<T>> exposed to Composables
  *   - launch()  helper that auto-sets Loading → Success/Error
  */
-abstract class BaseViewModel<T> : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState<T>>(UiState.Idle)
-    val uiState: StateFlow<UiState<T>> = _uiState.asStateFlow()
-
-    /**
-     * Launches a suspend block, automatically manages state:
-     *   1. Sets Loading
-     *   2. Runs the block
-     *   3. Sets Success or Error from DataResult
-     *
-     * Usage in ViewModel:
-     *   fun load() = launch { repository.getSomething() }
-     */
-    protected fun launch(block: suspend () -> DataResult<T>) {
+    protected fun launch(block: suspend () -> Unit) {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
-            _uiState.value = block().toUiState()
+            try {
+                block()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // optional — add crash reporting here later
+                // e.g. FirebaseCrashlytics.getInstance().recordException(e)
+            }
         }
     }
-
-    /** Reset back to Idle — useful after navigating away */
-    fun resetState() { _uiState.value = UiState.Idle }
 }
