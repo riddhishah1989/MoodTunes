@@ -26,7 +26,7 @@ object MoodTunesColors {
 
     // ── Primary (from Figma) ─────────────────────
     val Primary = Color(0xFF6F259C)  // Figma: #6F259C — button color
-    val PrimaryVariant = Color(0xFF9B5CC8)  // lighter purple
+    val PrimaryVariant = Color(0xFF9B5CC8)  // lighter purple #7167a4
     val PrimaryContainer = Color(0xFFF5EEFF)  // hero card bg
     val OnPrimary = Color(0xFFFFFFFF)  // white text on button
 
@@ -112,7 +112,7 @@ val MoodTunesTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = DmSansFontFamily,
         fontWeight = FontWeight.Black,      // dmsans_black — most impactful
-        fontSize = 32.sp,
+        fontSize = 40.sp,
         letterSpacing = (-1).sp,
         color = MoodTunesColors.TextPrimary,
     ),
@@ -187,7 +187,15 @@ val MoodTunesTypography = Typography(
     labelLarge = TextStyle(
         fontFamily = DmSansFontFamily,
         fontWeight = FontWeight.SemiBold,   // dmsans_semibold — buttons need weight
-        fontSize = 12.sp,
+        fontSize = 20.sp,
+        letterSpacing = 0.1.sp,
+        color = MoodTunesColors.TextSecondary,
+    ),
+
+    labelMedium = TextStyle(
+        fontFamily = DmSansFontFamily,
+        fontWeight = FontWeight.SemiBold,   // dmsans_semibold — buttons need weight
+        fontSize = 15.sp,
         letterSpacing = 0.1.sp,
         color = MoodTunesColors.TextSecondary,
     ),
