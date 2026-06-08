@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_no_internet">No internet connection. Please check your network.</string>
+    <string name="error_please_enter_your_full_name">Please enter your full name</string>
+    <string name="error_please_enter_your_email">Please enter your email</string>
+    <string name="error_please_enter_your_password">Please enter your password</string>
+    <string name="error_please_enter_valid_password">Please enter a valid password. It should contain 1 Uppercase, 1 Lowercase, 1 Digit and 1 Special character</string>
+    <string name="error_please_enter_a_valid_email">Please enter a valid email</string>
+    <string name="loading_finding_songs">Finding your perfect songs…</string>
+</resources>
