@@ -84,7 +84,8 @@
 
     <!-- ── Shared Components ──────────────────────────────────────────────── -->
     <string name="cd_album_art">%s album art</string>
-    <string name="loading_finding_songs">Finding your perfect songs…</string>
+
     <string name="btn_try_again">Try again</string>
+
 
 </resources>

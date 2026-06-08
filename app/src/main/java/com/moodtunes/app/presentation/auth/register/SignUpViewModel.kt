@@ -1,6 +1,8 @@
 package com.moodtunes.app.presentation.auth.register
 
 import android.util.Patterns
+import com.moodtunes.app.MoodTunesApp
+import com.moodtunes.app.R
 import com.moodtunes.app.data.local.UserPreferences
 import com.moodtunes.app.domain.model.Auth
 import com.moodtunes.app.domain.model.Genre
@@ -13,6 +15,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import utils.CommonUtilities.isValidEmail
+import utils.CommonUtilities.isValidPassword
+import utils.NetworkUtils
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +25,7 @@ class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val genresUseCase: GetGenresUseCase,
     private val userPreferences: UserPreferences,
+    private val networkUtils: NetworkUtils,
 ) :
     BaseViewModel() {
 
@@ -58,46 +64,47 @@ class SignUpViewModel @Inject constructor(
         password: String,
         selectedGenre: List<String> = emptyList()
     ) = launch {
-        if (name.isEmpty()) {
-            _uiStateSignUp.value = UiState.Error("Please enter your full name")
-            return@launch
-        } else if (email.isEmpty()) {
-            _uiStateSignUp.value = UiState.Error("Please enter your email")
-            return@launch
-        } else if (password.isEmpty()) {
-            _uiStateSignUp.value = UiState.Error("Please enter your password")
-            return@launch
-        } else if (!email.isValidEmail()) {
-            _uiStateSignUp.value = UiState.Error("Please enter a valid email")
-            return@launch
-        } else if (!password.isValidPassword()) {
-            _uiStateSignUp.value =
-                UiState.Error("Please enter a valid password. It should contains 1 Uppercase, 1 Lowercase, 1 Digit and 1 Special character")
+        if (!networkUtils.isInternetAvailable()) {
+            _uiStateSignUp.value = UiState.Error(MoodTunesApp.context.getString(R.string.error_no_internet))
             return@launch
         }
+
+        //Validate signup data
+        if (validateSignUpData(name, email, password)) return@launch
+
         _uiStateSignUp.value = UiState.Loading
         val result = signUpUseCase.invoke(name, email, password, selectedGenre)
 
-        if (result is DataResult.Success) {
-            userPreferences.saveToken(result.data.token)
-            userPreferences.saveUser(result.data.user)
-        }
-
         _uiStateSignUp.value = when (result) {
-            is DataResult.Success -> UiState.Success(result.data)
-            is DataResult.Error -> UiState.Error(result.message)
+            is DataResult.Success -> {
+                userPreferences.saveToken(result.data.token)
+                userPreferences.saveUser(result.data.user)
+                UiState.Success(result.data)
+            }
+
+            is DataResult.Error -> {
+                UiState.Error(result.message)
+            }
         }
 
     }
 
-    fun CharSequence?.isValidEmail(): Boolean {
-        return !this.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
-    }
+    private fun validateSignUpData(name: String, email: String, password: String): Boolean {
+        val errorMsg = when {
+            name.isEmpty() -> R.string.error_please_enter_your_full_name
+            email.isEmpty() -> R.string.error_please_enter_your_email
+            password.isEmpty() -> R.string.error_please_enter_your_password
+            !email.isValidEmail() -> R.string.error_please_enter_a_valid_email
+            !password.isValidPassword() -> R.string.error_please_enter_valid_password
+            else -> null
+        }
+        return if (errorMsg != null) {
+            _uiStateSignUp.value = UiState.Error(MoodTunesApp.context.getString(errorMsg))
+            true
+        } else {
+            false
+        }
 
-    fun String.isValidPassword(): Boolean {
-        val passwordRegex =
-            """^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$""".toRegex()
-        return passwordRegex.matches(this)
     }
 
     fun resetState() {

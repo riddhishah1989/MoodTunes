@@ -1,6 +1,5 @@
 package com.moodtunes.app.presentation.auth.register
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,12 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,10 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.moodtunes.app.R
 import com.moodtunes.app.domain.local.StaticData
 import com.moodtunes.app.domain.model.Genre
@@ -170,15 +166,19 @@ fun RegisterContent(
             onClick = { onSignUpClick(fullName, email, password) },
         )
         Spacer(modifier = Modifier.size(15.dp))
-        Row {
+        Row(horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+            .fillMaxWidth()) {
             Text(
                 text = "Already have an account? ",
                 color = MoodTunesColors.TextSecondary,
+                textAlign = TextAlign.Center
             )
             Text(
                 text = "Sign in",
                 color = MoodTunesColors.Primary,
                 modifier = Modifier.clickable { goBackToLogin() },
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -255,7 +255,7 @@ fun GenreChipGroup(
 @Preview(showBackground = true)
 fun PreviewRegister() {
     RegisterContent(
-        genres = emptyList(),
+        genres = StaticData.genreList,
         selectedGenreIds = emptyList(),
         goBackToLogin = {},
         onGenreToggle = {},
