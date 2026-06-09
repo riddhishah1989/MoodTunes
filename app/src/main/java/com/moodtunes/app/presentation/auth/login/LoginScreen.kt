@@ -131,7 +131,6 @@ fun LoginContent(
             Text(
                 text = buildAnnotatedString {
                     append("If you are not a member yet, please click on ")
-
                     withStyle(
                         style = SpanStyle(fontWeight = FontWeight.Bold, color = MoodTunesColors.Primary)
                     ) {

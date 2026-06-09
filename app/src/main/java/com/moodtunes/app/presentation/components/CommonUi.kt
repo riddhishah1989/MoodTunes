@@ -41,9 +41,7 @@ import com.moodtunes.app.ui.theme.MoodTunesTypography
 @Composable
 fun AppTopBar(
     onBack: () -> Unit,
-    title: String,
-    subtitle: String? = null,
-    centerTitle: Boolean = false,
+    title: String? = null,
     titleColor: Color = MoodTunesColors.TextPrimary,
     action: @Composable (() -> Unit)? = null,
 ) {
@@ -62,22 +60,17 @@ fun AppTopBar(
         }
         Column(
             modifier = Modifier.weight(1f),
-            horizontalAlignment = if (centerTitle) Alignment.CenterHorizontally else Alignment.Start,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = title,
-                style = if (centerTitle) MaterialTheme.typography.titleMedium
-                else MaterialTheme.typography.headlineMedium,
-                color = titleColor,
-            )
-            if (subtitle != null) {
+            if (title != null) {
                 Text(
-                    text = subtitle, style = MaterialTheme.typography.bodySmall,
-                    color = MoodTunesColors.TextSecondary
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = titleColor,
                 )
             }
         }
-        if (action != null) action() else if (centerTitle) Spacer(Modifier.width(48.dp))
+        if (action != null) action() else Spacer(Modifier.width(48.dp))
     }
 }
 
@@ -125,7 +118,7 @@ fun CustomTextField(
                         tint = if (passwordVisible)
                             MoodTunesColors.Primary       // purple when visible
                         else
-                            MoodTunesColors.TextTertiary, // grey when hidden
+                            MoodTunesColors.TextTertiary, // gray when hidden
                     )
                 }
             }

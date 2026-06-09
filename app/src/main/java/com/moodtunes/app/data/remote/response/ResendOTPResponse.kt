@@ -1,6 +1,5 @@
 package com.moodtunes.app.data.remote.response
 
-data class ForgotPasswordResponse(
+data class ResendOTPResponse(
     val message: String,
 )
-

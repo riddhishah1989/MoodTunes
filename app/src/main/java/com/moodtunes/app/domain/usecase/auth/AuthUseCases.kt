@@ -46,7 +46,6 @@ class ChangePasswordUseCase @Inject constructor(private val repository: IMoodTun
     }
 }
 
-// ─────────────────────────────────────────────────────────────
 
 class DeleteAccountUseCase @Inject constructor(private val repository: IMoodTunesRepository) {
     suspend operator fun invoke(

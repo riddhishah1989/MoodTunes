@@ -8,11 +8,6 @@ import retrofit2.http.*
 
 interface MoodTunesApiService {
 
-    // ── Health ────────────────────────────────────────────────
-    @GET("api/v1/health")
-    suspend fun healthCheck(): Response<ApiResponse<HealthResponse>>
-
-    // ── Auth ──────────────────────────────────────────────────
     @POST("api/v1/auth/signup")
     suspend fun signUp(@Body request: SignUpRequest): Response<ApiResponse<SignUpResponse>>
 
@@ -69,30 +64,11 @@ interface MoodTunesApiService {
         @Body request: RecommendationRequest,
     ): Response<ApiResponse<RecommendationResponse>>
 
-    // ── History ───────────────────────────────────────────────
-    @GET("api/v1/history")
-    suspend fun getHistory(
-        @Query("limit")  limit: Int  = 20,
-        @Query("offset") offset: Int = 0,
-    ): Response<ApiResponse<HistoryResponse>>
-
-    @GET("api/v1/history/{id}")
-    suspend fun getSession(
-        @Path("id") id: String,
-    ): Response<ApiResponse<SessionResponse>>
-
-    @DELETE("api/v1/history/{id}")
-    suspend fun deleteSession(
-        @Path("id") id: String,
-    ): Response<ApiResponse<Unit>>
-
-    @DELETE("api/v1/history")
-    suspend fun clearHistory(): Response<ApiResponse<Unit>>
 
     // ── Favourites ────────────────────────────────────────────
     @GET("api/v1/favourites")
     suspend fun getFavourites(
-        @Query("limit")  limit: Int  = 50,
+        @Query("limit") limit: Int = 50,
         @Query("offset") offset: Int = 0,
     ): Response<ApiResponse<FavouritesResponse>>
 
@@ -117,7 +93,7 @@ interface MoodTunesApiService {
     // ── Journal ───────────────────────────────────────────────
     @GET("api/v1/journal")
     suspend fun getJournal(
-        @Query("limit")  limit: Int  = 20,
+        @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0,
     ): Response<ApiResponse<JournalResponse>>
 
@@ -159,14 +135,14 @@ interface MoodTunesApiService {
     // ── Spotify ───────────────────────────────────────────────
     @GET("api/v1/spotify/search")
     suspend fun searchSpotify(
-        @Query("q")     query: String,
+        @Query("q") query: String,
         @Query("limit") limit: Int = 1,
     ): Response<ApiResponse<SpotifySearchResponse>>
 
     // ── YouTube ───────────────────────────────────────────────
     @GET("api/v1/youtube/search")
     suspend fun searchYouTube(
-        @Query("q")     query: String,
+        @Query("q") query: String,
         @Query("limit") limit: Int = 1,
     ): Response<ApiResponse<YouTubeSearchResponse>>
 }

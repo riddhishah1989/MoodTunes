@@ -1,11 +1,13 @@
 package com.moodtunes.app.di
 
 import com.moodtunes.app.BuildConfig
+import com.moodtunes.app.data.local.UserPreferences
 import com.moodtunes.app.data.remote.MoodTunesApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +21,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        userPreferences: UserPreferences,  // ← inject preferences
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG)
                 HttpLoggingInterceptor.Level.BODY
@@ -29,9 +33,19 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor { chain ->
+                // ── Read token synchronously ──────────────
+                val token = runBlocking {
+                    userPreferences.getToken()
+                }
                 val request = chain.request().newBuilder()
                     .addHeader("Content-Type", "application/json")
                     .addHeader("x-api-key", BuildConfig.API_KEY)
+                    .apply {
+                        // ← add token if available
+                        if (!token.isNullOrEmpty()) {
+                            addHeader("Authorization", "Bearer $token")
+                        }
+                    }
                     .build()
                 chain.proceed(request)
             }

@@ -1,5 +1,6 @@
 package com.moodtunes.app.presentation.state
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,6 +71,8 @@ fun <T> UiStateHandler(
         is UiState.Success -> {
             content(uiState.data)
         }
+
+        else -> {Log.e("MoodTunes","else branch")}
     }
 }
 

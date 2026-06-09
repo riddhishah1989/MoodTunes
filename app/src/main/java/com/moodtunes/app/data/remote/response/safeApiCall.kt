@@ -2,6 +2,8 @@ package com.moodtunes.app.data.remote.response
 
 import com.moodtunes.app.data.remote.models.ApiResponse
 import com.moodtunes.app.domain.result.DataResult
+import org.json.JSONObject
+import java.io.IOException
 
 suspend fun <T> safeApiCall(
     call: suspend () -> retrofit2.Response<ApiResponse<T>>,
@@ -21,17 +23,19 @@ suspend fun <T> safeApiCall(
             val errorBody = response.errorBody()?.string()
             val error = try {
                 // Try to parse error message from JSON
-                org.json.JSONObject(errorBody ?: "").getString("error")
+                JSONObject(errorBody ?: "").getString("error")
             } catch (e: Exception) {
                 "Something went wrong."
             }
             DataResult.Error(error)
         }
 
-    } catch (e: java.io.IOException) {
+    } catch (e: IOException) {
+        e.printStackTrace()
         // No internet
         DataResult.Error("Network error. Please check your connection.")
     } catch (e: Exception) {
+        e.printStackTrace()
         // Unexpected error
         DataResult.Error(e.message ?: "Something went wrong.")
     }
