@@ -72,23 +72,7 @@ interface IMoodTunesRepository {
         includeYoutube: Boolean,
     ): DataResult<RecommendationResult>
 
-    // ── History ───────────────────────────────────────────────
-    suspend fun getHistory(
-        limit: Int,
-        offset: Int,
-    ): DataResult<List<Session>>
-
-    suspend fun getSession(
-        id: String,
-    ): DataResult<Session>
-
-    suspend fun deleteSession(
-        id: String,
-    ): DataResult<Unit>
-
-    suspend fun clearHistory(): DataResult<Unit>
-
-    // ── Favourites ────────────────────────────────────────────
+       // ── Favourites ────────────────────────────────────────────
     suspend fun getFavourites(
         limit: Int,
         offset: Int,

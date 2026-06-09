@@ -35,8 +35,6 @@ import javax.inject.Singleton
 @Singleton
 class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiService) :
     IMoodTunesRepository {
-    // ── Auth ──────────────────────────────────────────────────
-
     override suspend fun signUp(
         name: String,
         email: String,
@@ -156,32 +154,7 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         )
     }.mapSuccess { it.toDomain() }
 
-    // ── History ───────────────────────────────────────────────
-
-    override suspend fun getHistory(
-        limit: Int,
-        offset: Int,
-    ): DataResult<List<Session>> = safeApiCall {
-        api.getHistory(limit = limit, offset = offset)
-    }.mapSuccess { it.toDomain() }
-
-    override suspend fun getSession(
-        id: String,
-    ): DataResult<Session> = safeApiCall {
-        api.getSession(id)
-    }.mapSuccess { it.toDomain() }
-
-    override suspend fun deleteSession(
-        id: String,
-    ): DataResult<Unit> = safeApiCall {
-        api.deleteSession(id)
-    }.mapSuccess { }
-
-    override suspend fun clearHistory(): DataResult<Unit> = safeApiCall {
-        api.clearHistory()
-    }.mapSuccess { }
-
-    // ── Favourites ────────────────────────────────────────────
+        // ── Favourites ────────────────────────────────────────────
 
     override suspend fun getFavourites(
         limit: Int,
@@ -226,9 +199,9 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         api.removeFavourite(songId)
     }.mapSuccess { }
 
-    override suspend fun clearFavourites(): DataResult<Unit> = safeApiCall {
-        api.clearFavourites()
-    }.mapSuccess { }
+    override suspend fun clearFavourites(): DataResult<Unit> {
+        TODO("Not yet implemented")
+    }
 
     // ── Journal ───────────────────────────────────────────────
 
@@ -261,9 +234,10 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         api.deleteJournalEntry(id)
     }.mapSuccess { }
 
-    override suspend fun clearJournal(): DataResult<Unit> = safeApiCall {
-        api.clearJournal()
-    }.mapSuccess { }
+    override suspend fun clearJournal(): DataResult<Unit> {
+        TODO("Not yet implemented")
+    }
+
 
     // ── Insights ──────────────────────────────────────────────
 

@@ -1,12 +1,11 @@
 package com.moodtunes.app.data.remote.response
 
-// GET /api/v1/moods → ApiResponse<MoodsResponse>
 data class MoodsResponse(
-    val moods: List<MoodItemResponse>,
+    val moods: List<Mood>,
     val count: Int,
 )
 
-data class MoodItemResponse(
+data class Mood(
     val id: String,
     val label: String,
     val emoji: String,
