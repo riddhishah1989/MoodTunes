@@ -53,21 +53,17 @@ fun LoginScreen(
     val uiState by loginViewModel.uiStateLogin.collectAsState()
     val snackbarHostState = rememberMoodTunesSnackbar()
 
-    //  ───────────── Navigate on success ───────────────────────────────
     LaunchedEffect(uiState) {
-        if (uiState is UiState.Success) {
-            onLoginSuccess()
-        }
-    }
+        when (val state = uiState) {
+            is UiState.Success -> onLoginSuccess()
+            is UiState.Error -> {
+                snackbarHostState.showSnackbar(state.message)
+                loginViewModel.resetState()
+            }
 
-    // ── Snackbar on error ─────────────────────────────────
-    LaunchedEffect(uiState) {
-        if (uiState is UiState.Error) {
-            snackbarHostState.showSnackbar(
-                (uiState as UiState.Error).message
-            )
-            loginViewModel.resetState()
+            else -> Unit
         }
+
     }
 
     Scaffold(
@@ -76,8 +72,8 @@ fun LoginScreen(
             LoginContent(
                 onSignUpClick = onNavigationSignUpScreen,
                 onForgotPasswordClick = onForgotPasswordScreen,
-                onLoginClick = {
-                    onLoginSuccess()
+                onLoginClick = { email, password ->
+                    loginViewModel.loginUser(email, password)
                 }
             )
             // ── Loading overlay ───────────────────────────
@@ -92,7 +88,7 @@ fun LoginScreen(
 fun LoginContent(
     onSignUpClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: (String, String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -132,7 +128,10 @@ fun LoginContent(
                 text = buildAnnotatedString {
                     append("If you are not a member yet, please click on ")
                     withStyle(
-                        style = SpanStyle(fontWeight = FontWeight.Bold, color = MoodTunesColors.Primary)
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = MoodTunesColors.Primary
+                        )
                     ) {
                         append("Register")
                     }
@@ -180,7 +179,7 @@ fun LoginContent(
 
         PrimaryButton(
             text = stringResource(R.string.btn_sign_in),
-            onClick = onLoginClick
+            onClick = { onLoginClick(email, password) }
         )
 
         Spacer(modifier = Modifier.weight(1.2f))
@@ -213,6 +212,6 @@ fun PreviewLoginContent() {
     LoginContent(
         onSignUpClick = {},
         onForgotPasswordClick = {},
-        onLoginClick = {}
+        onLoginClick = {} as (String, String) -> Unit
     )
 }

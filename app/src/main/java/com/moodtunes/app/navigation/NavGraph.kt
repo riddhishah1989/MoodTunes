@@ -2,20 +2,27 @@ package com.moodtunes.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.moodtunes.app.presentation.auth.forgotpassword.ForgotPasswordScreen
 import com.moodtunes.app.presentation.auth.login.LoginScreen
 import com.moodtunes.app.presentation.auth.register.SignUpScreen
+import com.moodtunes.app.presentation.changepassword.ChangePasswordScreen
 import com.moodtunes.app.presentation.splash.MoodTunesSplashScreen
+import com.moodtunes.app.presentation.verifyotp.VerifyOTPScreen
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object SignUp : Screen("signup")
     object ForgotPwd : Screen("forgot_pwd")
+
+    object VerifyOTP : Screen("verify_pwd/{email}")
+
+    object ChangePassword : Screen("change_pwd")
     object Home : Screen("home")
-    object History : Screen("history")
     object Favourites : Screen("favourites")
     object Journal : Screen("journal")
     object Profile : Screen("profile")
@@ -82,8 +89,34 @@ fun MoodTunesNavGraph(navController: NavHostController, startDestination: String
         }
         composable(Screen.ForgotPwd.route) {
             ForgotPasswordScreen(
-                onBack = { navController.popBackStack() },
-                onPasswordResetSent = { navController.popBackStack() }) // Go back to SignIn after sending reset email
+                onBack = { navController.popBackStack() }, // navigate to login screen on back press
+                onForgotPasswordSuccess = {
+                    navController.navigate(Screen.VerifyOTP.route) {
+                        popUpTo(Screen.VerifyOTP.route)
+                    }
+                })
+        }
+        composable(
+            Screen.VerifyOTP.route,
+            arguments = listOf(navArgument("email") { type = NavType.StringType })
+        ) { backStackEntry ->
+            VerifyOTPScreen(
+                email = backStackEntry.arguments?.getString("email") ?: "",
+                onVerifyOTPSuccess = {
+                    navController.navigate(Screen.ChangePassword.route) {
+                        popUpTo(Screen.ChangePassword.route)
+                    }
+                }, onBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.ChangePassword.route) {
+            ChangePasswordScreen(onChangePasswordSuccess = {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Home.route) {
+                        inclusive = true
+                    }
+                }
+            })
         }
 
 

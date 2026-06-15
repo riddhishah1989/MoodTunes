@@ -40,12 +40,12 @@ interface MoodTunesApiService {
     @POST("api/v1/auth/resend-otp")
     suspend fun resendOTP(
         @Body request: ResendOTPRequest,
-    ): Response<ApiResponse<ForgotPasswordResponse>>
+    ): Response<ApiResponse<ResendOTPResponse>>
 
     @POST("api/v1/auth/reset-password")
     suspend fun resetPassword(
         @Body request: ResetPasswordRequest,
-    ): Response<ApiResponse<Unit>>
+    ): Response<ApiResponse<ResetPasswordResponse>>
 
     @POST("api/v1/auth/refresh-token")
     suspend fun refreshToken(): Response<ApiResponse<RefreshTokenResponse>>

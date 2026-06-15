@@ -1,7 +1,14 @@
 package com.moodtunes.app.domain.repository
 
-import com.moodtunes.app.data.remote.request.UpdateProfileRequest
-import com.moodtunes.app.domain.model.*
+import com.moodtunes.app.domain.model.Auth
+import com.moodtunes.app.domain.model.Favourite
+import com.moodtunes.app.domain.model.Genre
+import com.moodtunes.app.domain.model.Insights
+import com.moodtunes.app.domain.model.JournalEntry
+import com.moodtunes.app.domain.model.Mood
+import com.moodtunes.app.domain.model.RecommendationResult
+import com.moodtunes.app.domain.model.ShareResult
+import com.moodtunes.app.domain.model.User
 import com.moodtunes.app.domain.result.DataResult
 
 interface IMoodTunesRepository {
@@ -22,7 +29,7 @@ interface IMoodTunesRepository {
     suspend fun getMe(): DataResult<User>
 
     suspend fun updateProfile(
-        request: UpdateProfileRequest,
+        name: String, preferredGenres: List<String> = emptyList()
     ): DataResult<User>
 
     suspend fun changePassword(
@@ -37,24 +44,24 @@ interface IMoodTunesRepository {
     // ── OTP / Password Reset ──────────────────────────────────
     suspend fun forgotPassword(
         email: String,
-    ): DataResult<String>  // returns message
+    ): DataResult<String>
 
     suspend fun verifyOTP(
         email: String,
         otp: String,
-    ): DataResult<String>  // returns verified email for next screen
+    ): DataResult<String>
 
     suspend fun resendOTP(
         email: String,
-    ): DataResult<String>  // returns message
+    ): DataResult<String>
 
     suspend fun resetPassword(
         email: String,
         newPassword: String,
         confirmPassword: String,
-    ): DataResult<Unit>  // returns success message
+    ): DataResult<String>
 
-    suspend fun refreshToken(): DataResult<String>  // returns new token
+    suspend fun refreshToken(): DataResult<String>
 
     // ── Moods ─────────────────────────────────────────────────
     suspend fun getMoods(): DataResult<List<Mood>>
@@ -72,7 +79,7 @@ interface IMoodTunesRepository {
         includeYoutube: Boolean,
     ): DataResult<RecommendationResult>
 
-       // ── Favourites ────────────────────────────────────────────
+    // ── Favourites ────────────────────────────────────────────
     suspend fun getFavourites(
         limit: Int,
         offset: Int,
