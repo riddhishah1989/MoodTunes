@@ -194,9 +194,9 @@ fun CircularAppIconWithText(
 @Composable
 fun PrimaryButton(
     text: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
@@ -265,7 +265,10 @@ fun MoodTunesLoadingOverlay(isLoading: Boolean) {
                 .background(Color.Black.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator(color = MoodTunesColors.Primary)
+            CircularProgressIndicator(
+                color = MoodTunesColors.Primary,
+                modifier = Modifier.size(30.dp)
+            )
         }
     }
 }
@@ -306,6 +309,7 @@ private fun CommonUIPreview() {
             Spacer(modifier = Modifier.size(12.dp))
             PrimaryButton(text = "Login", onClick = {})
             Spacer(modifier = Modifier.size(12.dp))
+            MoodTunesLoadingOverlay(true)
         }
     }
 }

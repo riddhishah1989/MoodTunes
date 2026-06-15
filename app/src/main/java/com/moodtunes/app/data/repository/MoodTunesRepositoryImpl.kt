@@ -63,9 +63,15 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
     }.mapSuccess { it.toDomain() }
 
     override suspend fun updateProfile(
-        request: UpdateProfileRequest,
+        name: String,
+        preferredGenres: List<String>,
     ): DataResult<User> = safeApiCall {
-        api.updateProfile(request)
+        api.updateProfile(
+            UpdateProfileRequest(
+                name = name,
+                preferredGenres = preferredGenres,
+            )
+        )
     }.mapSuccess { it.user.toDomain() }
 
     override suspend fun changePassword(
@@ -106,7 +112,7 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
         email: String,
         newPassword: String,
         confirmPassword: String,
-    ): DataResult<Unit> = safeApiCall {
+    ): DataResult<String> = safeApiCall {
         api.resetPassword(
             ResetPasswordRequest(
                 email = email,
@@ -114,7 +120,7 @@ class MoodTunesRepositoryImpl @Inject constructor(private val api: MoodTunesApiS
                 confirmPassword = confirmPassword,
             )
         )
-    }.mapSuccess { }
+    }.mapSuccess { it.message }
 
     override suspend fun refreshToken(): DataResult<String> = safeApiCall {
         api.refreshToken()

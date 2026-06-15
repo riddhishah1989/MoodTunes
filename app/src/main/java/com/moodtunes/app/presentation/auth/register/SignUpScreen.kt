@@ -53,20 +53,18 @@ fun SignUpScreen(onNavigationLoginScreen: () -> Unit, onSignUpSuccess: () -> Uni
     val selectedGenreIds by signUpViewModel.selectedGenreIds.collectAsState()
     val snackbarHostState = rememberMoodTunesSnackbar()
 
-    // ── Navigate on success ───────────────────────────────
     LaunchedEffect(uiState) {
-        if (uiState is UiState.Success) {
-            onSignUpSuccess()
-        }
-    }
+        when (val state = uiState) {
+            is UiState.Success -> {
+                onSignUpSuccess()
+            }
 
-    // ── Snackbar on error ─────────────────────────────────
-    LaunchedEffect(uiState) {
-        if (uiState is UiState.Error) {
-            snackbarHostState.showSnackbar(
-                (uiState as UiState.Error).message
-            )
-            signUpViewModel.resetState()
+            is UiState.Error -> {
+                snackbarHostState.showSnackbar(state.message)
+                signUpViewModel.resetState()
+            }
+
+            else -> Unit
         }
     }
 
@@ -166,9 +164,11 @@ fun RegisterContent(
             onClick = { onSignUpClick(fullName, email, password) },
         )
         Spacer(modifier = Modifier.size(15.dp))
-        Row(horizontalArrangement = Arrangement.Center,
+        Row(
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-            .fillMaxWidth()) {
+                .fillMaxWidth()
+        ) {
             Text(
                 text = "Already have an account? ",
                 color = MoodTunesColors.TextSecondary,
