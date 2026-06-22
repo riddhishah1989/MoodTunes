@@ -1,6 +1,6 @@
 # 🎵 MoodTunes — Android App
 
-AI-powered mood-based music recommendations. Tell us how you feel, Claude picks the perfect playlist.
+AI-powered mood-based music recommendations. Tell us how you feel, and Claude picks the perfect playlist.
 
 ## Tech Stack
 
@@ -8,7 +8,6 @@ AI-powered mood-based music recommendations. Tell us how you feel, Claude picks 
 - **MVVM + Clean Architecture** — Repository, ViewModel, UseCase layers
 - **Hilt** — Dependency injection
 - **Retrofit + OkHttp** — Networking to MoodTunes API
-- **Room** — Local history and favourites storage
 - **DataStore** — User preferences
 - **Coil** — Image loading (album art)
 - **Claude AI** (via backend API) — Music recommendations
