@@ -1,185 +1,174 @@
 # 🎵 MoodTunes — Android App
 
-> **"Spotify knows what you listened to. MoodTunes knows how you feel."**
+> “Spotify knows what you listened to. MoodTunes knows how you feel.”
 
-AI-powered mood-based music recommendation app. Describe how you feel — Claude picks the perfect playlist, enriched with Spotify and YouTube links.
+MoodTunes is an Android app for mood-based music recommendations. Users can
+describe how they feel, receive a tailored set of songs from the MoodTunes
+backend, and discover matching tracks on Spotify and YouTube.
 
----
-
-## What makes MoodTunes different
-
-| Feature | Spotify | Apple Music | MoodTunes |
-|---|---|---|---|
-| Music recommendations | Based on history | Based on history | Based on **current emotion** |
-| Natural language input | ❌ | ❌ | ✅ "just had a fight with my friend" |
-| Mood journal | ❌ | ❌ | ✅ |
-| AI personal insights | ❌ | ❌ | ✅ |
-| "Why this song fits your mood" | ❌ | ❌ | ✅ |
-| Share a mood playlist | ❌ | ❌ | ✅ |
-| Spotify + YouTube in one app | ❌ | ❌ | ✅ |
-
----
+> [!NOTE]
+> MoodTunes is under active development. Authentication and password-recovery
+> flows are currently connected to the app navigation. The data and domain
+> layers already support recommendations, favourites, a mood journal, insights,
+> playlist sharing, and music-provider searches; their remaining screens and
+> navigation are still being completed.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Language | Kotlin 1.9+ |
-| UI | Jetpack Compose |
-| Architecture | MVVM + Clean Architecture |
-| DI | Hilt |
-| Networking | Retrofit 2 + OkHttp |
-| Local Storage | Room DB + DataStore |
-| Image Loading | Coil |
-| Async | Kotlin Coroutines + Flow |
-| Navigation | Jetpack Navigation Compose |
-| AI | Claude API via MoodTunes backend |
-| Music | Spotify Web API + YouTube Data API |
+- **Kotlin 2.0** + **Jetpack Compose Material 3** — declarative Android UI
+- **MVVM + Clean Architecture** — presentation, domain, and data layers
+- **Hilt** — dependency injection
+- **Retrofit + OkHttp + Gson** — REST API networking and JSON conversion
+- **Kotlin Coroutines + Flow** — asynchronous work and observable UI state
+- **Preferences DataStore** — JWT, user profile, and app preferences
+- **Coil** — remote image loading
+- **Lottie Compose** — animations
+- **Navigation Compose** — screen routing and navigation arguments
+- **Spotify + YouTube** (through the backend) — track discovery links
 
----
+The app targets Android API 35, supports API 26 and newer, and uses Java 17.
 
-## Screens
+## Features and Screens
 
-| Screen | Description |
-|---|---|
-| Splash | App intro with tagline |
-| Onboarding | 3-slide swipe intro explaining MoodTunes |
-| Sign Up | Register with name, email, password |
-| Sign In | Login with JWT token |
-| Home | Hero banner + mood scroll + recent sessions |
-| Mood Picker | 2×4 mood grid + free-text input + genre filter |
-| Recommendations | AI song cards with Spotify + YouTube buttons |
-| Now Playing | Full-screen player + Claude AI reason + prev/next |
-| History | Date-grouped past mood sessions |
-| Favourites | Saved tracks with quick-play buttons |
-| Mood Journal | Log your mood with note + star rating |
-| Insights | AI-powered mood + music pattern analysis |
-| Profile | Edit profile, change password, linked services |
-
----
+| Area | Description | Status |
+|---|---|---|
+| Splash | Checks the saved session and chooses the next destination | Implemented |
+| Sign In | Authenticates a user and stores the returned session | Implemented |
+| Sign Up | Creates an account with profile information | Implemented |
+| Forgot Password | Requests a password-reset OTP by email | Implemented |
+| Verify OTP | Verifies the reset code and supports resending it | Implemented |
+| Reset Password | Sets a new password after OTP verification | Implemented |
+| Change Password | Changes the password for an authenticated user | Implemented |
+| Home | Main signed-in destination | In progress |
+| Mood Recommendations | Select moods and genres and request personalized songs | API/domain ready |
+| Favourites | Add, list, check, remove, or clear saved tracks | API/domain ready |
+| Mood Journal | Create, read, delete, or clear mood entries | API/domain ready |
+| Insights | Retrieve mood and listening insights for a date range | API/domain ready |
+| Playlist Sharing | Generate and retrieve shared playlists | API/domain ready |
+| Spotify / YouTube Search | Find provider matches for recommended songs | API/domain ready |
 
 ## Setup
 
-### 1. Clone the repo
+### 1. Clone the repository
+
 ```bash
-git clone https://github.com/riddhishah1989/moodtunes-android
-cd moodtunes-android
+git clone https://github.com/riddhishah1989/MoodTunes.git
+cd MoodTunes
 ```
 
-### 2. Create `local.properties`
-```
-sdk.dir=C:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk
+### 2. Configure the Android SDK
+
+Android Studio normally creates `local.properties` automatically. If needed,
+create it in the project root:
+
+```properties
+# Windows (escape backslashes in a .properties file)
+sdk.dir=C\:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk
 ```
 
-### 3. Set your API URL in `app/build.gradle.kts`
+On macOS or Linux:
+
+```properties
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+```
+
+### 3. Configure the backend
+
+Set the REST API base URL and internal API key in
+`app/build.gradle.kts`:
+
 ```kotlin
 defaultConfig {
-    buildConfigField("String", "API_BASE_URL", "\"https://your-moodtunes-api.up.railway.app/\"")
+    buildConfigField(
+        "String",
+        "API_BASE_URL",
+        "\"https://your-moodtunes-api.example.com/\""
+    )
+    buildConfigField(
+        "String",
+        "API_KEY",
+        "\"your-internal-api-key\""
+    )
 }
 ```
 
-### 4. Open in Android Studio
-File → Open → select the `MoodTunes` folder → Sync Gradle → Run
+The base URL must end with `/` because it is passed to Retrofit. Do not commit
+production secrets to a public repository; for production, load them from a
+local Gradle property, environment variable, or your CI secret store.
 
----
+### 4. Build and run
+
+Open the repository in Android Studio, allow Gradle to sync, select an emulator
+or physical device running Android 8.0 (API 26) or newer, and click **Run**.
+
+You can also build a debug APK from the command line:
+
+```bash
+./gradlew assembleDebug
+```
+
+On Windows PowerShell:
+
+```powershell
+.\gradlew.bat assembleDebug
+```
 
 ## Architecture
 
-```
-app/
+```text
+app/src/main/java/com/moodtunes/app/
 ├── data/
-│   ├── model/              # Data classes, Room entities, API models
-│   ├── remote/             # Retrofit MoodTunesApiService
-│   ├── local/              # Room DB + DAOs (sessions, favourites, journal)
-│   └── repository/         # MoodTunesRepository
+│   ├── local/              # Preferences DataStore
+│   ├── mapper/             # API-to-domain mappings
+│   ├── remote/
+│   │   ├── request/        # REST request models
+│   │   ├── response/       # REST response models
+│   │   └── MoodTunesApiService.kt
+│   └── repository/         # Repository implementation
 ├── domain/
-│   └── usecase/            # Business logic use cases
+│   ├── local/              # Static app data
+│   ├── model/              # App-facing models
+│   ├── repository/         # Repository contract
+│   ├── result/             # Success/error result types
+│   └── usecase/            # Auth, recommendation, journal,
+│                           # favourites, insights, and sharing use cases
 ├── presentation/
-│   ├── home/               # HomeScreen + HomeViewModel
-│   ├── moodpicker/         # MoodPickerScreen + MoodPickerViewModel
-│   ├── recommendations/    # RecommendationsScreen + ViewModel
-│   ├── player/             # NowPlayingScreen + NowPlayingViewModel
-│   ├── history/            # HistoryScreen + HistoryViewModel
-│   ├── favourites/         # FavouritesScreen + FavouritesViewModel
-│   ├── journal/            # JournalScreen + JournalViewModel
-│   ├── insights/           # InsightsScreen + InsightsViewModel
-│   ├── profile/            # ProfileScreen + ProfileViewModel
-│   ├── auth/               # SignInScreen + SignUpScreen
-│   ├── onboarding/         # OnboardingScreen
-│   └── components/         # Shared composables (SongCard, MoodChip, etc.)
-├── di/                     # Hilt modules (NetworkModule, DatabaseModule)
-├── navigation/             # NavGraph + Screen sealed class
-└── ui/theme/               # Theme, colors, typography, shapes
+│   ├── auth/               # Login, registration, and forgot password
+│   ├── changepassword/     # Authenticated password update
+│   ├── components/         # Shared Compose UI
+│   ├── home/               # Home UI
+│   ├── resetpassword/      # New-password flow
+│   ├── splash/             # Launch/session routing
+│   ├── state/              # Common ViewModel and UI-state helpers
+│   └── verifyotp/          # OTP entry and verification
+├── di/                     # Hilt dependency modules
+├── navigation/             # Navigation graph and routes
+├── ui/theme/               # Compose theme
+├── MainActivity.kt
+└── MoodTunesApp.kt
 ```
 
----
+The presentation layer calls focused domain use cases. Those use cases depend
+on `IMoodTunesRepository`, whose implementation coordinates the Retrofit API
+and local preferences. Hilt provides these dependencies to ViewModels.
 
-## API Endpoints Used
+## Backend API
 
-| Screen | Endpoint |
-|---|---|
-| Sign Up | `POST /api/v1/auth/signup` |
-| Sign In | `POST /api/v1/auth/signin` |
-| Profile | `GET /api/v1/auth/me` |
-| Update Profile | `PUT /api/v1/auth/profile` |
-| Change Password | `PUT /api/v1/auth/password` |
-| Delete Account | `DELETE /api/v1/auth/account` |
-| Mood Picker | `GET /api/v1/moods` |
-| Genre Picker | `GET /api/v1/genres` |
-| Recommendations | `POST /api/v1/recommendations` |
-| History | `GET /api/v1/history` |
-| Single Session | `GET /api/v1/history/:id` |
-| Delete Session | `DELETE /api/v1/history/:id` |
-| Favourites | `GET /api/v1/favourites` |
-| Add Favourite | `POST /api/v1/favourites` |
-| Check Favourite | `GET /api/v1/favourites/:songId/check` |
-| Remove Favourite | `DELETE /api/v1/favourites/:songId` |
-| Journal | `GET /api/v1/journal` |
-| Add Journal Entry | `POST /api/v1/journal` |
-| Delete Journal Entry | `DELETE /api/v1/journal/:id` |
-| Insights | `GET /api/v1/insights` |
-| Share Playlist | `POST /api/v1/share` |
-| Spotify Search | `GET /api/v1/spotify/search?q=` |
-| YouTube Search | `GET /api/v1/youtube/search?q=` |
+MoodTunes expects a REST backend exposing the following groups:
 
----
+- `/api/v1/auth` — sign-up, sign-in, profile, password, OTP, and token refresh
+- `/api/v1/moods` and `/api/v1/genres` — recommendation inputs
+- `/api/v1/recommendations` — mood-based song recommendations
+- `/api/v1/favourites` — saved songs
+- `/api/v1/journal` — mood journal entries
+- `/api/v1/insights` — mood and listening insights
+- `/api/v1/share` — shared playlists
+- `/api/v1/spotify/search` and `/api/v1/youtube/search` — provider lookup
 
-## Color Palette
-
-| Token | Hex | Usage |
-|---|---|---|
-| Background | `#08080F` | App background |
-| Surface | `#0F0F1E` | Cards |
-| Primary | `#6C63FF` | Accent, buttons, active states |
-| Spotify | `#1DB954` | Spotify play buttons |
-| YouTube | `#C4302B` | YouTube play buttons |
-| Happy | `#FFD93D` | Mood chip accent |
-| Sad | `#5B8FD4` | Mood chip accent |
-| Energetic | `#FF6B6B` | Mood chip accent |
-| Calm | `#5DD68A` | Mood chip accent |
-| Romantic | `#FF63A5` | Mood chip accent |
-| Focused | `#4D96FF` | Mood chip accent |
-| Angry | `#FF4444` | Mood chip accent |
-| Anxious | `#C77DFF` | Mood chip accent |
-
----
-
-## Backend
-
-This app requires the **MoodTunes API** to be running.
-
-👉 [moodtunes-api](https://github.com/riddhishah1989/moodtunes-api) — Node.js + Express + MongoDB
-
----
-
-## Related
-
-| Repo | Description |
-|---|---|
-| [moodtunes-api](https://github.com/riddhishah1989/moodtunes-api) | Backend REST API |
-
----
+Authenticated calls send a bearer token from DataStore. Every request also
+sends the configured `x-api-key` header.
 
 ## License
 
-MIT
+No license file is currently included. Add a `LICENSE` file before distributing
+the project under an open-source license.
