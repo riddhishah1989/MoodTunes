@@ -16,7 +16,6 @@ AI-powered mood-based music recommendations. Tell us how you feel, and Claude pi
 
 | Screen | Description |
 |--------|-------------|
-| Onboarding | 3-slide intro with swipe navigation |
 | Sign In / Sign Up | Auth screens matching Figma design |
 | Home | Mood scroll + hero banner + recent sessions |
 | Mood Picker | 2×4 mood grid + free-text input |
