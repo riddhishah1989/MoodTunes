@@ -11,6 +11,11 @@ fun ChangePasswordScreen(onChangePasswordSuccess: () -> Unit) {
 }
 
 @Composable
+fun ChangePasswordContent(){
+
+}
+
+@Composable
 @Preview
 fun ChangePasswordPreview() {
     ChangePasswordScreen(onChangePasswordSuccess = {})

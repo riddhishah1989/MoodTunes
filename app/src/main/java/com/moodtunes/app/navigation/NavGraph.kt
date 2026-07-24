@@ -10,6 +10,7 @@ import com.moodtunes.app.presentation.auth.forgotpassword.ForgotPasswordScreen
 import com.moodtunes.app.presentation.auth.login.LoginScreen
 import com.moodtunes.app.presentation.auth.register.SignUpScreen
 import com.moodtunes.app.presentation.changepassword.ChangePasswordScreen
+import com.moodtunes.app.presentation.resetpassword.ResetPasswordScreen
 import com.moodtunes.app.presentation.splash.MoodTunesSplashScreen
 import com.moodtunes.app.presentation.verifyotp.VerifyOTPScreen
 
@@ -19,7 +20,9 @@ sealed class Screen(val route: String) {
     object SignUp : Screen("signup")
     object ForgotPwd : Screen("forgot_pwd")
 
-    object VerifyOTP : Screen("verify_pwd/{email}")
+    object VerifyOTP : Screen("verify_otp/{email}")
+
+    object ResetPassword : Screen("reset_pwd/{email}")
 
     object ChangePassword : Screen("change_pwd")
     object Home : Screen("home")
@@ -103,12 +106,27 @@ fun MoodTunesNavGraph(navController: NavHostController, startDestination: String
             VerifyOTPScreen(
                 email = backStackEntry.arguments?.getString("email") ?: "",
                 onVerifyOTPSuccess = {
-                    navController.navigate(Screen.ChangePassword.route) {
-                        popUpTo(Screen.ChangePassword.route)
+                    navController.navigate(Screen.ResetPassword.route) {
+                        popUpTo(Screen.ResetPassword.route)
                     }
                 }, onBack = { navController.popBackStack() }
             )
         }
+        composable(
+            Screen.ResetPassword.route,
+            arguments = listOf(navArgument("email") { type = NavType.StringType })
+        ) { backStackEntry ->
+            ResetPasswordScreen(
+                email = backStackEntry.arguments?.getString("email") ?: "",
+                onResetPasswordSuccess = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route)
+                    }
+                },
+                onBack = { navController.popBackStack() })
+        }
+
+
         composable(Screen.ChangePassword.route) {
             ChangePasswordScreen(onChangePasswordSuccess = {
                 navController.navigate(Screen.Home.route) {
