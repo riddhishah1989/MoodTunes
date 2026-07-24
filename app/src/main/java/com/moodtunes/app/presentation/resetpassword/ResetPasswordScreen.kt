@@ -1,16 +1,14 @@
-package com.moodtunes.app.presentation.verifyotp
+package com.moodtunes.app.presentation.resetpassword
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,32 +18,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.moodtunes.app.R
 import com.moodtunes.app.presentation.components.AppTopBar
 import com.moodtunes.app.presentation.components.CircularAppIconWithText
-import com.moodtunes.app.presentation.components.OtpTextField
+import com.moodtunes.app.presentation.components.CustomTextField
 import com.moodtunes.app.presentation.components.PrimaryButton
 import com.moodtunes.app.presentation.components.rememberMoodTunesSnackbar
 import com.moodtunes.app.presentation.state.UiState
 import com.moodtunes.app.ui.theme.MoodTunesColors
-import com.moodtunes.app.ui.theme.MoodTunesTheme
 import com.moodtunes.app.ui.theme.MoodTunesTypography
 
 @Composable
-fun VerifyOTPScreen(email: String, onVerifyOTPSuccess: () -> Unit, onBack: () -> Unit) {
-    val verifyOTPViewModel: VerifyOTPViewModel = hiltViewModel()
-    val uiState by verifyOTPViewModel.uiStateVerifyOTP.collectAsState()
+fun ResetPasswordScreen(email: String, onResetPasswordSuccess: () -> Unit, onBack: () -> Unit) {
+
+    val resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
+    val uiState by resetPasswordViewModel.uiStateResetPassword.collectAsState()
     val snackbarHostState = rememberMoodTunesSnackbar()
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
-            is UiState.Success -> onVerifyOTPSuccess()
+            is UiState.Success -> onResetPasswordSuccess()
             is UiState.Error -> {
                 snackbarHostState.showSnackbar(state.message)
-                verifyOTPViewModel.resetState()
+                resetPasswordViewModel.resetState()
             }
 
             else -> {}
@@ -61,20 +61,23 @@ fun VerifyOTPScreen(email: String, onVerifyOTPSuccess: () -> Unit, onBack: () ->
                 .background(MoodTunesColors.Background)
                 .padding(padding)
         ) {
-            VerifyOTPContent(
-                email = email,
-                onVerifyOTPClick = { otp ->
-                    verifyOTPViewModel.verifyOTP(otp, email)
+            ResetPasswordContent(
+                onResetPwdClick = { newPassword, confirmPassword ->
+                    resetPasswordViewModel.resetPassword(email, newPassword, confirmPassword)
                 },
-                onBack = onBack,
+                onBack = onBack
             )
         }
     }
 }
 
 @Composable
-fun VerifyOTPContent(email: String, onVerifyOTPClick: (String) -> Unit, onBack: () -> Unit) {
-    var otpCode by remember { mutableStateOf("") }
+fun ResetPasswordContent(
+    onResetPwdClick: (String, String) -> Unit,
+    onBack: () -> Unit
+) {
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -94,41 +97,30 @@ fun VerifyOTPContent(email: String, onVerifyOTPClick: (String) -> Unit, onBack: 
             )
             Spacer(modifier = Modifier.size(30.dp))
             Text(
-                text = "Please enter the code we just sent to email",
+                text = "Your new password must be different from previous used passwords.",
                 style = MoodTunesTypography.labelMedium
             )
-            Spacer(modifier = Modifier.size(5.dp))
-            Text(text = email, style = MoodTunesTypography.labelMedium)
             Spacer(modifier = Modifier.size(30.dp))
-            OtpTextField(
-                otpText = otpCode,
-                onOtpTextChange = { text, isComplete ->
-                    otpCode = text
-                    if (isComplete) {
-                        onVerifyOTPClick(otpCode)
-                    }
-                }
+            CustomTextField(
+                value = password,
+                onValueChange = { password = it },
+                keyboardType = KeyboardType.Password,
+                hint = stringResource(R.string.hint_password),
+                isPassword = true,
             )
-            Spacer(modifier = Modifier.size(10.dp))
-            Row {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    text = "Didn't receive a code? ",
-                    style = MoodTunesTypography.labelMedium,
-                    textAlign = TextAlign.Center
-                )
-
-                TextButton(onClick = {}) {
-                    Text(
-                        text = "Resend",
-                        style = MoodTunesTypography.labelMedium,
-                        color = MoodTunesColors.Primary,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-            PrimaryButton(text = "Verify OTP", onClick = { onVerifyOTPClick(otpCode) })
-
+            Spacer(modifier = Modifier.size(15.dp))
+            CustomTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                keyboardType = KeyboardType.Password,
+                hint = stringResource(R.string.hint_confirm_password),
+                isPassword = true,
+            )
+            Spacer(modifier = Modifier.size(15.dp))
+            PrimaryButton(
+                text = "Reset Password",
+                onClick = { onResetPwdClick(password, confirmPassword) },
+            )
         }
     }
 
@@ -136,8 +128,6 @@ fun VerifyOTPContent(email: String, onVerifyOTPClick: (String) -> Unit, onBack: 
 
 @Composable
 @Preview(showBackground = true)
-fun VerifyOTPScreenPreview() {
-    MoodTunesTheme {
-        VerifyOTPContent("riddhi@gmail.com", onVerifyOTPClick = {}, onBack = {})
-    }
+fun ResetPasswordPreview() {
+    ResetPasswordContent(onResetPwdClick = { _, _ -> }, onBack = {})
 }
